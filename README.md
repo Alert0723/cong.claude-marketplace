@@ -16,8 +16,8 @@
 /plugin marketplace add https://github.com/Alert0723/cong.claude-marketplace
 
 # 2. 安装插件（根据你的系统选择）
-/plugin install windows@claude-notification    # Windows
-/plugin install unix@claude-notification       # macOS/Linux
+/plugin install windows@cong.claude-marketplace    # Windows
+/plugin install unix@cong.claude-marketplace       # macOS/Linux
 ```
 
 > **注意**: 安装完成后需要重启 Claude Code 才能生效。
@@ -61,7 +61,7 @@
 <img width="899" height="450" alt="image" src="https://github.com/user-attachments/assets/5040723f-e7ff-4417-9435-cad140e7991b" />
 
 
-AI 会自动创建配置文件 `.claude/claude-notification.local.md`，并询问是否要在项目的 `CLAUDE.md` 中添加通知功能，让 AI 能够在完成任务后主动发送通知。
+AI 会自动创建配置文件 `.claude/cong.claude-marketplace.local.md`，并询问是否要在项目的 `CLAUDE.md` 中添加通知功能，让 AI 能够在完成任务后主动发送通知。
 
 ### 让 AI 主动发送通知
 
@@ -80,7 +80,7 @@ AI 会自动创建配置文件 `.claude/claude-notification.local.md`，并询�
 
 ### 手动配置
 
-如果你想手动配置，在项目根目录创建 `.claude/claude-notification.local.md`：
+如果你想手动配置，在项目根目录创建 `.claude/cong.claude-marketplace.local.md`：
 
 ```markdown
 ---

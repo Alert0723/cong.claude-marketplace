@@ -10,10 +10,10 @@
 
 ```bash
 # macOS/Linux
-bash ~/.claude/plugins/cache/claude-notification/unix/*/skills/notification-config/scripts/bark.sh -u "用户的Bark URL" -t "标题" -m "消息内容"
+bash ~/.claude/plugins/cache/cong.claude-marketplace/unix/*/skills/notification-config/scripts/bark.sh -u "用户的Bark URL" -t "标题" -m "消息内容"
 
 # Windows
-powershell -NoProfile -ExecutionPolicy Bypass -File "$env:USERPROFILE\.claude\plugins\cache\claude-notification\windows\*\skills\notification-config\scripts\bark.ps1" -Url "用户的Bark URL" -Title "标题" -Message "消息内容"
+powershell -NoProfile -ExecutionPolicy Bypass -File "$env:USERPROFILE\.claude\plugins\cache\cong.claude-marketplace\windows\*\skills\notification-config\scripts\bark.ps1" -Url "用户的Bark URL" -Title "标题" -Message "消息内容"
 ```
 
 ### 方法 2：读取配置文件
@@ -22,13 +22,13 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "$env:USERPROFILE\.claude\pl
 
 ```bash
 # 1. 检查配置文件是否存在
-if [ -f ".claude/claude-notification.local.md" ]; then
+if [ -f ".claude/cong.claude-marketplace.local.md" ]; then
     # 2. 提取 bark_url
-    BARK_URL=$(sed -n '/^---$/,/^---$/{ /^---$/d; p; }' .claude/claude-notification.local.md | grep '^bark_url:' | sed 's/bark_url: *//' | sed 's/^"\(.*\)"$/\1/')
+    BARK_URL=$(sed -n '/^---$/,/^---$/{ /^---$/d; p; }' .claude/cong.claude-marketplace.local.md | grep '^bark_url:' | sed 's/bark_url: *//' | sed 's/^"\(.*\)"$/\1/')
 
     # 3. 如果配置了 Bark，发送通知
     if [ -n "$BARK_URL" ]; then
-        bash ~/.claude/plugins/cache/claude-notification/unix/*/skills/notification-config/scripts/bark.sh -u "$BARK_URL" -t "Claude Code" -m "任务已完成"
+        bash ~/.claude/plugins/cache/cong.claude-marketplace/unix/*/skills/notification-config/scripts/bark.sh -u "$BARK_URL" -t "Claude Code" -m "任务已完成"
     fi
 fi
 ```
@@ -47,7 +47,7 @@ fi
 ```bash
 # 用户说："帮我运行测试，完成后通知我"
 # 你应该：
-npm test && bash ~/.claude/plugins/cache/claude-notification/unix/*/skills/notification-config/scripts/bark.sh -u "$BARK_URL" -t "测试完成" -m "所有测试通过"
+npm test && bash ~/.claude/plugins/cache/cong.claude-marketplace/unix/*/skills/notification-config/scripts/bark.sh -u "$BARK_URL" -t "测试完成" -m "所有测试通过"
 
 # 用户说："创建文件后用 bark 通知我"
 # 你应该：
@@ -59,6 +59,6 @@ npm test && bash ~/.claude/plugins/cache/claude-notification/unix/*/skills/notif
 ## 注意事项
 
 - 通知脚本路径使用通配符 `*` 匹配版本号
-- 优先从 `.claude/claude-notification.local.md` 读取配置
+- 优先从 `.claude/cong.claude-marketplace.local.md` 读取配置
 - 如果用户没有配置 Bark，静默跳过通知
 - 不要为每个小操作都发送通知，只在重要时刻使用

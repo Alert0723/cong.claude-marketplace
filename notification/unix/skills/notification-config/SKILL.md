@@ -13,7 +13,7 @@ This plugin supports configuration and proactive notification sending.
 
 ## Configuration File
 
-**Location**: `.claude/claude-notification.local.md` (project root)
+**Location**: `.claude/cong.claude-marketplace.local.md` (project root)
 
 ### Configuration Options
 
@@ -107,7 +107,7 @@ Send notifications proactively in these scenarios:
 **IMPORTANT: Always check existing configuration first**
 
 1. **Check if configuration already exists:**
-   - Use Read tool to check `.claude/claude-notification.local.md`
+   - Use Read tool to check `.claude/cong.claude-marketplace.local.md`
    - If file exists and contains `bark_url`:
      - Display current configuration to user
      - Ask if they want to modify it (use AskUserQuestion)
@@ -119,7 +119,7 @@ Send notifications proactively in these scenarios:
    - Ask: "请提供您的 Bark 推送 URL（例如：https://api.day.app/your-key/）"
 
 3. **Create or update configuration file:**
-   - Use Write tool to create/update `.claude/claude-notification.local.md`
+   - Use Write tool to create/update `.claude/cong.claude-marketplace.local.md`
 
 4. **Check if CLAUDE.md needs notification configuration:**
    - Use Read tool to check if `.claude/CLAUDE.md` exists
@@ -174,7 +174,7 @@ bash "{{PLUGIN_PATH}}/skills/notification-config/scripts/bark.sh" -u "<user's ba
 
 When user requests notification or after completing important tasks:
 
-1. Read `bark_url` from `.claude/claude-notification.local.md`
+1. Read `bark_url` from `.claude/cong.claude-marketplace.local.md`
 2. If bark_url exists, use Bash tool to call bark.sh with the exact command format from CLAUDE.md (or use the format shown above if CLAUDE.md doesn't have it)
 3. Choose appropriate parameters based on scenario (use -c for urgent notifications)
 

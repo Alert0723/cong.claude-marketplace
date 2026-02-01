@@ -12,7 +12,7 @@ TIMEOUT=3000
 ALWAYS_NOTIFY="false"
 
 # 读取配置文件
-CONFIG_FILE="$DIR/.claude/claude-notification.local.md"
+CONFIG_FILE="$DIR/.claude/cong.claude-marketplace.local.md"
 if [[ -f "$CONFIG_FILE" ]]; then
     # 提取 YAML frontmatter
     FRONTMATTER=$(sed -n '/^---$/,/^---$/{ /^---$/d; p; }' "$CONFIG_FILE")

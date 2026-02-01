@@ -9,7 +9,7 @@ if (-not $Dir -or $Dir -eq '${CLAUDE_PROJECT_DIR}' -or $Dir -eq '$CLAUDE_PROJECT
 }
 
 # 读取配置文件
-$configFile = Join-Path $Dir ".claude/claude-notification.local.md"
+$configFile = Join-Path $Dir ".claude/cong.claude-marketplace.local.md"
 $barkUrl = ""
 $barkOnly = $false
 $alwaysNotify = $false
