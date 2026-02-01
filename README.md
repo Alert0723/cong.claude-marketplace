@@ -33,7 +33,7 @@
 
 如果您已经安装过此插件，请使用以下命令更新插件版本
 ```bash
-/plugin marketplace update claude-notification
+/plugin marketplace update cong.claude-marketplace
 ```
 <img width="745" height="181" alt="image" src="https://github.com/user-attachments/assets/4bbdb377-4e9b-4a04-9553-cd536f7c9a4c" />
 
