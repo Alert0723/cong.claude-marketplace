@@ -1,17 +1,17 @@
 {
-  "name": "claude-notification",
+  "name": "cong-claude-marketplace",
   "owner": {
-    "name": "Oreo992"
+    "name": "conghuang"
   },
   "plugins": [
     {
-      "name": "windows",
-      "source": "./windows",
+      "name": "notification-windows",
+      "source": "./notification/windows",
       "description": "Windows 桌面通知（PowerShell）"
     },
     {
-      "name": "unix",
-      "source": "./unix",
+      "name": "notification-unix",
+      "source": "./notification/unix",
       "description": "macOS/Linux 桌面通知（Shell）"
     }
   ]
