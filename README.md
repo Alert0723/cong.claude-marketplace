@@ -1,11 +1,15 @@
-# Claude Code Notification Plugin
+# Claude Code Marketplace
+
+收录自用的Claude插件，便于备份管理
+
+## Claude Code Notification Plugin
 
 桌面通知插件，在以下场景发送系统通知（仅当终端在后台时触发）：
 
 - **权限请求** - 需要用户确认权限时
 - **任务完成** - Claude 完成任务时
 
-## 安装
+### 安装
 
 ```bash
 # 1. 在 Claude Code 输入框中添加市场
@@ -18,15 +22,15 @@
 
 > **注意**: 安装完成后需要重启 Claude Code 才能生效。
 
-## 插件列表
+### 插件列表
 
 | 插件 | 平台 | 说明 |
 |------|------|------|
 | `windows` | Windows 10/11 | PowerShell 实现，无需额外依赖 |
 | `unix` | macOS/Linux | macOS 使用 osascript，Linux 使用 notify-send |
 
+### 更新
 
-## 更新
 如果您已经安装过此插件，请使用以下命令更新插件版本
 ```bash
 /plugin marketplace update claude-notification
@@ -35,7 +39,7 @@
 
 当提示更新完毕，重启Claude Code。
 
-## 初始化/配置
+### 初始化/配置
 
 此插件支持自定义配置和对应的Skills。
 首次使用建议运行
@@ -59,28 +63,17 @@
 
 AI 会自动创建配置文件 `.claude/claude-notification.local.md`，并询问是否要在项目的 `CLAUDE.md` 中添加通知功能，让 AI 能够在完成任务后主动发送通知。
 
-
-## 让 AI 主动发送通知
+### 让 AI 主动发送通知
 
 这通常会在初始化时，Claude会主动询问您是否配置，如果未询问，您也可以通过
 ```bash
 /notification-config 给你自己加上通知的功能,到全局的CLAUDE.md中
 ```
-<img width="1144" height="912" alt="image" src="https://github.com/user-attachments/assets/a31bf2a8-177d-45ec-950c-8fe047e04f68" />
-
 支持的通知场景：
 - 用户明确要求："完成后通知我"、"用 bark 通知我"
 - 长时间任务完成：构建、测试、部署等
 - 重要里程碑：PR 创建、代码审查完成
 - 需要关注的错误：构建失败、测试不通过
-
-
-示例：
-<img width="1581" height="276" alt="image" src="https://github.com/user-attachments/assets/18e73474-d577-45d3-8399-f447b56495b3" />
-
-收到的提示如下：
-
-<img width="400" height="300" alt="image" src="https://github.com/user-attachments/assets/4af4bc54-afa2-49a9-a54f-6c8a9bb44960" />
 
 
 详细配置指南也可以查看 [NOTIFICATION_SETUP.md](./NOTIFICATION_SETUP.md)。
@@ -107,17 +100,17 @@ always_notify: false
 | `timeout` | number | 3000 | 通知显示时长(毫秒)，Windows/Linux 有效 |
 | `always_notify` | boolean | false | 设为 true 则始终通知，即使终端在前台 |
 
-## Bark 推送
+### Bark 推送
 
 [Bark](https://github.com/Finb/Bark) 是一个 iOS 推送服务，优势是通知会持久保留在通知中心。
 
-### 安装 Bark
+#### 安装 Bark
 
 1. 在 App Store 下载 Bark 应用
 2. 打开应用获取推送 URL（格式：`https://api.day.app/your-key`）
 3. 告诉 AI："帮我配置 Bark 通知"，提供你的 URL
 
-### AI 主动发送通知
+#### AI 主动发送通知
 
 AI 可以在完成重要任务时主动发送通知。插件提供了完整的 Bark 推送脚本，支持：
 
@@ -130,12 +123,13 @@ AI 可以在完成重要任务时主动发送通知。插件提供了完整的 B
 - 自动复制内容
 
 **示例场景：**
+
 - 长时间构建完成
 - 测试运行结束
 - 代码审查完成
 - 需要紧急确认
 
-## 功能特点
+### 功能特点
 
 - **智能检测** - 只在终端窗口处于后台时发送通知（可配置）
 - **多终端支持** - 能正确区分不同的终端窗口实例
@@ -149,21 +143,24 @@ AI 可以在完成重要任务时主动发送通知。插件提供了完整的 B
 - **丰富参数** - 支持紧急通知、消息分组、自定义铃声等
 - **灵活配置** - 支持前台通知、仅 Bark 推送等多种模式
 
-## 系统要求
+### 系统要求
 
-### Windows
+#### Windows
+
 - Windows 10/11
 - PowerShell 5.1+（系统自带）
 
-### macOS
+#### macOS
+
 - macOS 10.14+
 - 无需额外依赖
 
-### Linux
+#### Linux
+
 - 需要安装 `libnotify`
 - Ubuntu/Debian: `sudo apt install libnotify-bin`
 
-## 插件结构
+### 插件结构
 
 ```
 windows/
@@ -191,15 +188,15 @@ unix/
     └── hooks.json
 ```
 
-## 使用示例
+### 使用示例
 
-### 自动通知（Hooks）
+#### 自动通知（Hooks）
 
 插件会在以下事件自动发送通知：
 - 权限请求时
 - 任务完成时
 
-### AI 主动通知
+#### AI 主动通知
 
 AI 会在合适的时机主动发送通知，例如：
 
@@ -208,7 +205,7 @@ AI 会在合适的时机主动发送通知，例如：
 AI: [运行测试] → [测试完成] → [发送 Bark 通知]
 ```
 
-### 手动调用脚本
+#### 手动调用脚本
 
 你也可以直接调用脚本：
 
@@ -225,6 +222,7 @@ AI: [运行测试] → [测试完成] → [发送 Bark 通知]
 ```
 
 **macOS/Linux:**
+
 ```bash
 # 查看帮助
 ./bark.sh -h
@@ -236,7 +234,7 @@ AI: [运行测试] → [测试完成] → [发送 Bark 通知]
 ./bark.sh -u "https://api.day.app/xxx" -m "需要确认" -c
 ```
 
-## 常见问题
+### 常见问题
 
 **Q: 配置修改后不生效？**
 A: 需要重启 Claude Code 才能生效。
@@ -250,31 +248,10 @@ A: 告诉 AI "发送紧急通知"，或使用 `-Call` / `-c` 参数。
 **Q: 通知没有显示？**
 A: 检查终端是否在前台，插件只在终端后台时发送通知。
 
-## 许可证
+### 许可证
 
 MIT
 
-## 贡献
+### 贡献
 
 欢迎提交 Issue 和 Pull Request！
-
-## 更新日志
-
-### v1.2.4 (2026-01-31)
-- ✨ Windows 升级到 Toast 通知 API，支持持久化到通知中心
-- ✨ 新增 `always_notify` 配置，支持前台通知
-- 🐛 修复 Unix 脚本缺少可执行权限的问题
-- 📝 说明 macOS/Linux 原生支持持久化通知
-
-### v1.1.0 (2026-01-31)
-- ✨ 新增 Bark 推送支持
-- ✨ 新增配置文件支持
-- ✨ 新增 AI 主动通知能力
-- ✨ 新增完整的 Bark 参数支持（紧急通知、分组、铃声等）
-- 🔧 优化插件结构，符合 Claude Code 规范
-- 📝 完善文档和使用示例
-
-### v1.0.0
-- 🎉 初始版本
-- ✅ Windows/macOS/Linux 支持
-- ✅ 权限请求和任务完成通知
