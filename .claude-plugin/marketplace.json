@@ -6,12 +6,12 @@
   "plugins": [
     {
       "name": "notification-windows",
-      "source": "./windows",
+      "source": "./notification/windows",
       "description": "Windows 桌面通知（PowerShell）"
     },
     {
       "name": "notification-unix",
-      "source": "./unix",
+      "source": "./notification/unix",
       "description": "macOS/Linux 桌面通知（Shell）"
     }
   ]
