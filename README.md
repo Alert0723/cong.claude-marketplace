@@ -35,8 +35,6 @@
 ```bash
 /plugin marketplace update cong.claude-marketplace
 ```
-<img width="745" height="181" alt="image" src="https://github.com/user-attachments/assets/4bbdb377-4e9b-4a04-9553-cd536f7c9a4c" />
-
 当提示更新完毕，重启Claude Code。
 
 ### 初始化/配置
@@ -47,18 +45,12 @@
 /notification-config
 ```
 跟随Claude，完成通知插件的配置
-<img width="1341" height="413" alt="image" src="https://github.com/user-attachments/assets/396361a3-a550-4d9c-9c04-48070bcb976c" />
-
 
 
 后续你也可以使用此Skills，对通知配置进行更改，如：
 - "帮我配置 Bark 通知"
 - "我想让通知显示时间长一点"
 - "只用 Bark 推送，不要系统通知"
-
-示例:
-
-<img width="899" height="450" alt="image" src="https://github.com/user-attachments/assets/5040723f-e7ff-4417-9435-cad140e7991b" />
 
 
 AI 会自动创建配置文件 `.claude/cong.claude-marketplace.local.md`，并询问是否要在项目的 `CLAUDE.md` 中添加通知功能，让 AI 能够在完成任务后主动发送通知。
