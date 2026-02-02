@@ -16,57 +16,62 @@
 /plugin marketplace add https://github.com/Alert0723/cong.claude-marketplace
 
 # 2. 安装插件（根据你的系统选择）
-/plugin install windows@cong.claude-marketplace    # Windows
-/plugin install unix@cong.claude-marketplace       # macOS/Linux
+/plugin install notification-windows@cong.claude-marketplace    # Windows
+/plugin install notification-unix@cong.claude-marketplace       # macOS/Linux
 ```
 
 > **注意**: 安装完成后需要重启 Claude Code 才能生效。
 
 ### 插件列表
 
-| 插件 | 平台 | 说明 |
-|------|------|------|
-| `windows` | Windows 10/11 | PowerShell 实现，无需额外依赖 |
-| `unix` | macOS/Linux | macOS 使用 osascript，Linux 使用 notify-send |
+| 插件                     | 平台          | 说明                                         |
+| ------------------------ | ------------- | -------------------------------------------- |
+| `notification-windows` | Windows 10/11 | PowerShell 实现，无需额外依赖                |
+| `notification-unix`    | macOS/Linux   | macOS 使用 osascript，Linux 使用 notify-send |
 
 ### 更新
 
 如果您已经安装过此插件，请使用以下命令更新插件版本
+
 ```bash
 /plugin marketplace update cong.claude-marketplace
 ```
+
 当提示更新完毕，重启Claude Code。
 
 ### 初始化/配置
 
 此插件支持自定义配置和对应的Skills。
 首次使用建议运行
+
 ```bash
 /notification-config
 ```
+
 跟随Claude，完成通知插件的配置
 
-
 后续你也可以使用此Skills，对通知配置进行更改，如：
+
 - "帮我配置 Bark 通知"
 - "我想让通知显示时间长一点"
 - "只用 Bark 推送，不要系统通知"
-
 
 AI 会自动创建配置文件 `.claude/cong.claude-marketplace.local.md`，并询问是否要在项目的 `CLAUDE.md` 中添加通知功能，让 AI 能够在完成任务后主动发送通知。
 
 ### 让 AI 主动发送通知
 
 这通常会在初始化时，Claude会主动询问您是否配置，如果未询问，您也可以通过
+
 ```bash
 /notification-config 给你自己加上通知的功能,到全局的CLAUDE.md中
 ```
+
 支持的通知场景：
+
 - 用户明确要求："完成后通知我"、"用 bark 通知我"
 - 长时间任务完成：构建、测试、部署等
 - 重要里程碑：PR 创建、代码审查完成
 - 需要关注的错误：构建失败、测试不通过
-
 
 详细配置指南也可以查看 [NOTIFICATION_SETUP.md](./NOTIFICATION_SETUP.md)。
 
@@ -85,12 +90,12 @@ always_notify: false
 
 ### 配置项说明
 
-| 配置项 | 类型 | 默认值 | 说明 |
-|--------|------|--------|------|
-| `bark_url` | string | 空 | Bark 推送地址 |
-| `bark_only` | boolean | false | 设为 true 则只使用 Bark，不显示系统通知 |
-| `timeout` | number | 3000 | 通知显示时长(毫秒)，Windows/Linux 有效 |
-| `always_notify` | boolean | false | 设为 true 则始终通知，即使终端在前台 |
+| 配置项            | 类型    | 默认值 | 说明                                    |
+| ----------------- | ------- | ------ | --------------------------------------- |
+| `bark_url`      | string  | 空     | Bark 推送地址                           |
+| `bark_only`     | boolean | false  | 设为 true 则只使用 Bark，不显示系统通知 |
+| `timeout`       | number  | 3000   | 通知显示时长(毫秒)，Windows/Linux 有效  |
+| `always_notify` | boolean | false  | 设为 true 则始终通知，即使终端在前台    |
 
 ### Bark 推送
 
@@ -185,6 +190,7 @@ unix/
 #### 自动通知（Hooks）
 
 插件会在以下事件自动发送通知：
+
 - 权限请求时
 - 任务完成时
 
@@ -202,6 +208,7 @@ AI: [运行测试] → [测试完成] → [发送 Bark 通知]
 你也可以直接调用脚本：
 
 **Windows:**
+
 ```powershell
 # 查看帮助
 .\bark.ps1 -Help
