@@ -1,5 +1,5 @@
 {
-  "name": "windows",
+  "name": "notification-windows",
   "description": "Windows 桌面通知 - 任务完成时发送通知",
   "version": "1.2.6",
   "author": {
