@@ -13,6 +13,11 @@
       "name": "notification-unix",
       "source": "./notification/unix",
       "description": "macOS/Linux 桌面通知（Shell）"
+    },
+    {
+      "name": "claude-mem",
+      "source": "./claude-mem",
+      "description": "Persistent memory system for Claude Code - context compression across sessions"
     }
   ]
 }
