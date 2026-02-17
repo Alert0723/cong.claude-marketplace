@@ -13,6 +13,11 @@
       "name": "notification-unix",
       "source": "./notification/unix",
       "description": "macOS/Linux 桌面通知（Shell）"
+    },
+    {
+      "name": "plugin-dev",
+      "source": "./plugin-dev",
+      "description": "插件开发工具包 - Hooks、MCP、Commands、Agents、Skills 完整开发指南"
     }
   ]
 }

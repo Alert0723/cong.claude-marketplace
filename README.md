@@ -28,6 +28,7 @@
 | ------------------------ | ------------- | -------------------------------------------- |
 | `notification-windows` | Windows 10/11 | PowerShell 实现，无需额外依赖                |
 | `notification-unix`    | macOS/Linux   | macOS 使用 osascript，Linux 使用 notify-send |
+| `plugin-dev`           | 全平台        | 插件开发工具包，提供完整的插件开发指南       |
 
 ### 更新
 
@@ -250,6 +251,164 @@ A: 检查终端是否在前台，插件只在终端后台时发送通知。
 ### 许可证
 
 MIT
+
+## Plugin Development Toolkit (plugin-dev)
+
+Claude Code 官方插件开发工具包，提供完整的插件开发指南和最佳实践。
+
+### 安装
+
+```bash
+/plugin install plugin-dev@cong.claude-marketplace
+```
+
+> **注意**: 安装完成后需要重启 Claude Code 才能生效。
+
+### 功能特性
+
+plugin-dev 提供了 7 个专业技能和 3 个辅助 Agent,帮助你快速构建高质量的 Claude Code 插件:
+
+#### 📚 7 大核心技能
+
+1. **Hook Development** - 事件驱动自动化和高级 Hooks API
+2. **MCP Integration** - Model Context Protocol 服务器集成
+3. **Plugin Structure** - 插件组织结构和清单配置
+4. **Plugin Settings** - 使用 `.claude/plugin-name.local.md` 的配置模式
+5. **Command Development** - 创建带前置元数据和参数的斜杠命令
+6. **Agent Development** - 创建自主 Agent,支持 AI 辅助生成
+7. **Skill Development** - 创建具有渐进式披露和强触发器的技能
+
+#### 🤖 3 个专业 Agent
+
+- **agent-creator** - 帮助设计和构建专业 Agent
+- **plugin-validator** - 验证插件结构和配置
+- **skill-reviewer** - 审查 Agent Skill 实现
+
+#### 🚀 /plugin-dev:create-plugin 命令
+
+8 阶段引导式工作流,从概念到完成:
+
+1. **Discovery** - 了解插件目的和需求
+2. **Component Planning** - 确定需要的 Skills、Commands、Agents、Hooks、MCP
+3. **Detailed Design** - 指定每个组件并解决歧义
+4. **Structure Creation** - 设置目录和清单
+5. **Component Implementation** - 使用 AI 辅助创建每个组件
+6. **Validation** - 运行 plugin-validator 和组件特定检查
+7. **Testing** - 在 Claude Code 中验证插件
+8. **Documentation** - 完成 README 并准备发布
+
+**使用方法:**
+
+```bash
+# 启动引导式插件创建流程
+/plugin-dev:create-plugin
+
+# 或提供初始描述
+/plugin-dev:create-plugin 一个用于管理数据库迁移的插件
+```
+
+### 使用示例
+
+#### 创建你的第一个插件
+
+```
+用户: "我想创建一个插件,需要 MCP 集成和命令"
+AI: [自动加载 plugin-structure skill] "让我帮你规划插件结构..."
+```
+
+#### 添加 Hook
+
+```
+用户: "创建一个 PreToolUse hook 来验证文件写入"
+AI: [自动加载 hook-development skill] "我会创建一个验证 hook..."
+```
+
+#### 集成外部服务
+
+```
+用户: "添加 Asana MCP 服务器,使用 OAuth"
+AI: [自动加载 mcp-integration skill] "让我配置 SSE MCP 服务器..."
+```
+
+### 实用工具
+
+plugin-dev 包含多个生产就绪的实用脚本:
+
+```bash
+# 验证 hooks.json 结构
+./validate-hook-schema.sh hooks/hooks.json
+
+# 部署前测试 hooks
+./test-hook.sh my-hook.sh test-input.json
+
+# Lint hook 脚本最佳实践
+./hook-linter.sh my-hook.sh
+
+# 解析配置文件的 YAML frontmatter
+./parse-frontmatter.sh .claude/my-plugin.local.md
+
+# 验证插件设置
+./validate-settings.sh .claude/my-plugin.local.md
+```
+
+### 最佳实践
+
+✅ **安全优先**
+- Hook 中的输入验证
+- MCP 服务器使用 HTTPS/WSS
+- 凭证使用环境变量
+- 最小权限原则
+
+✅ **可移植性**
+- 到处使用 `${CLAUDE_PLUGIN_ROOT}`
+- 仅使用相对路径
+- 环境变量替换
+
+✅ **测试**
+- 部署前验证配置
+- 使用示例输入测试 hooks
+- 使用调试模式 (`claude --debug`)
+
+✅ **文档**
+- 清晰的 README 文件
+- 记录环境变量
+- 使用示例
+
+### 资源内容
+
+- **核心 Skills**: 7 个 SKILL.md 文件,约 11,065 字
+- **参考文档**: 10,000+ 字的详细指南
+- **示例**: 12+ 个工作示例(hook 脚本、MCP 配置、插件布局、设置文件)
+- **实用工具**: 6 个生产就绪的验证/测试/解析脚本
+
+### 插件结构
+
+```
+plugin-dev/
+├── .claude-plugin/
+│   └── plugin.json           # 插件元数据
+├── agents/                   # 3 个专业 Agent
+│   ├── agent-creator.md
+│   ├── plugin-validator.md
+│   └── skill-reviewer.md
+├── commands/
+│   └── create-plugin.md      # 8 阶段引导式工作流
+├── skills/                   # 7 大核心技能
+│   ├── hook-development/
+│   ├── mcp-integration/
+│   ├── plugin-structure/
+│   ├── plugin-settings/
+│   ├── command-development/
+│   ├── agent-development/
+│   └── skill-development/
+└── README.md
+```
+
+### 来源
+
+本插件来自 [Claude Code 官方仓库](https://github.com/anthropics/claude-code/tree/main/plugins/plugin-dev)，由 Anthropic 的 Daisy Hollman 开发。
+
+---
 
 ### 贡献
 

@@ -1,0 +1,12 @@
+{
+  "name": "plugin-dev",
+  "version": "0.1.0",
+  "description": "Plugin Development Toolkit - 插件开发工具包,提供 hooks、MCP 集成、插件结构等完整开发指南",
+  "author": {
+    "name": "Anthropic (Daisy Hollman)",
+    "email": "daisy@anthropic.com"
+  },
+  "repository": "https://github.com/anthropics/claude-code",
+  "capabilities": ["commands", "agents", "skills"],
+  "license": "MIT"
+}
