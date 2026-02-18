@@ -99,7 +99,7 @@ Lines 1-2 always shown. Additional lines are opt-in via config:
 - Agents line (`showAgents`): ◐ explore [haiku]: Finding auth code
 - Todos line (`showTodos`): ▸ Fix authentication bug (2/5)
 - Environment line (`showConfigCounts`): 2 CLAUDE.md | 4 rules
-- Token details line (`showTokenDetails`): Tokens in: 45k, out: 12k, cache: 8k (hit: 15%)
+- Token details line (`showTokenDetails`): Tokens in: 45k, out: 12k, cache: 8k (hit: 15%) (cumulative for session)
 
 ### Context Thresholds
 

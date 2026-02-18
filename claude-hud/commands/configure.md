@@ -58,7 +58,7 @@ Questions: **Turn Off → Turn On → Git Style → Layout/Reset** (4 questions 
   - "Git status" - git:(main*) branch indicator
   - "Config counts" - 2 CLAUDE.md | 4 rules
   - "Token breakdown" - (in: 45k, cache: 12k)
-  - "Token details" - in: 45k, out: 12k, cache: 8k (hit: 15%)
+  - "Token details" - in: 45k, out: 12k, cache: 8k (hit: 15%) (cumulative for session)
   - "Output speed" - out: 42.1 tok/s
   - "Usage limits" - 5h: 25% | 7d: 10%
   - "Session duration" - ⏱️ 5m
@@ -89,7 +89,7 @@ If preset has all items OFF (Minimal), Q3 shows "Nothing to disable - Minimal pr
   - "Usage bar style" - ██░░ 25% visual bar (only if usageBarEnabled is true)
 
 If more than 4 items ON, show Activity items (Tools, Agents, Todos, Git) first.
-Info items (Counts, Tokens, Usage, Speed, Duration) can be turned off via "Reset to Minimal" in Q4.
+Info items (Counts, Token breakdown, Token details, Usage, Speed, Duration) can be turned off via "Reset to Minimal" in Q4.
 
 ### Q2: Turn On
 - header: "Turn On"
@@ -98,7 +98,7 @@ Info items (Counts, Tokens, Usage, Speed, Duration) can be turned off via "Reset
 - options: **ONLY items currently OFF** (max 4)
   - "Config counts" - 2 CLAUDE.md | 4 rules
   - "Token breakdown" - (in: 45k, cache: 12k)
-  - "Token details" - in: 45k, out: 12k, cache: 8k (hit: 15%)
+  - "Token details" - in: 45k, out: 12k, cache: 8k (hit: 15%) (cumulative for session)
   - "Output speed" - out: 42.1 tok/s
   - "Usage limits" - 5h: 25% | 7d: 10%
   - "Usage bar style" - ██░░ 25% visual bar (only if usageBarEnabled is false)
@@ -133,17 +133,17 @@ Info items (Counts, Tokens, Usage, Speed, Duration) can be turned off via "Reset
 
 **Full** (everything ON):
 - Activity: Tools ON, Agents ON, Todos ON
-- Info: Counts ON, Tokens ON, Usage ON, Duration ON
+- Info: Counts ON, Token breakdown ON, Token details ON, Usage ON, Duration ON
 - Git: ON (with dirty indicator, no ahead/behind)
 
 **Essential** (activity + git):
 - Activity: Tools ON, Agents ON, Todos ON
-- Info: Counts OFF, Tokens OFF, Usage OFF, Duration ON
+- Info: Counts OFF, Token breakdown OFF, Token details OFF, Usage OFF, Duration ON
 - Git: ON (with dirty indicator)
 
 **Minimal** (core only — this is the default):
 - Activity: Tools OFF, Agents OFF, Todos OFF
-- Info: Counts OFF, Tokens OFF, Usage OFF, Duration OFF
+- Info: Counts OFF, Token breakdown OFF, Token details OFF, Usage OFF, Duration OFF
 - Git: ON (with dirty indicator)
 
 ---

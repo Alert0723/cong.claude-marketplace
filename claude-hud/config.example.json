@@ -4,6 +4,7 @@
     "showAgents": true,
     "showTodos": true,
     "showDuration": true,
-    "showConfigCounts": true
+    "showConfigCounts": true,
+    "showTokenDetails": false
   }
 }

@@ -197,6 +197,7 @@ Use AskUserQuestion:
   - "Tools activity" — Shows running/completed tools (◐ Edit: file.ts | ✓ Read ×3)
   - "Agents & Todos" — Shows subagent status and todo progress
   - "Session info" — Shows session duration and config counts (CLAUDE.md, rules, MCPs)
+  - "Token details" — Shows detailed cumulative token breakdown for current session (input, output, cache hit rate)
 
 **If user selects any options**, write `~/.claude/plugins/claude-hud/config.json` (create directories if needed):
 
@@ -205,6 +206,7 @@ Use AskUserQuestion:
 | Tools activity | `display.showTools: true` |
 | Agents & Todos | `display.showAgents: true, display.showTodos: true` |
 | Session info | `display.showDuration: true, display.showConfigCounts: true` |
+| Token details | `display.showTokenDetails: true` |
 
 Merge with existing config if the file already exists. Only write keys the user selected — don't write `false` for unselected items (defaults handle that).
 
@@ -218,7 +220,7 @@ Use AskUserQuestion:
 - Question: "Setup complete! The HUD should appear below your input field. Is it working?"
 - Options: "Yes, it's working" / "No, something's wrong"
 
-**If yes**: Ask the user if they'd like to ⭐ star the claude-hud repository on GitHub to support the project. If they agree and `gh` CLI is available, run: `gh api -X PUT /user/starred/jarrodwatts/claude-hud`. Only run the star command if they explicitly say yes.
+**If yes**: Setup complete.
 
 **If no**: Debug systematically:
 

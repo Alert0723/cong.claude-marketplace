@@ -8,7 +8,7 @@ Real-time statusline showing context usage, active tools, running agents, and to
 
 **Step 1: Add the marketplace**
 ```
-/plugin marketplace add jarrodwatts/claude-hud
+/plugin marketplace add Alert0723/cong.claude-marketplace
 ```
 
 **Step 2: Install the plugin**
@@ -44,7 +44,7 @@ If not installed or outdated, direct user to https://claude.ai/code
 
 Run this command in Claude Code:
 ```
-/plugin marketplace add jarrodwatts/claude-hud
+/plugin marketplace add Alert0723/cong.claude-marketplace
 ```
 
 ### Step 3: Install the Plugin
@@ -70,16 +70,6 @@ Tell the user:
 - The statusline appears immediately — no restart needed
 - It shows: context usage, active tools, running agents, and todo progress
 
-### Step 6: Ask About Starring (Optional)
-
-Ask the user: "Would you like to star the repository to support the project?"
-
-Only if they explicitly agree, run:
-```bash
-gh repo star jarrodwatts/claude-hud
-```
-
-Never run this automatically without user consent.
 
 </agent_workflow>
 
@@ -92,7 +82,7 @@ Technical documentation for agents who need to understand, modify, or debug Clau
 <plugin>
   <name>Claude HUD</name>
   <description>Real-time statusline showing context usage, active tools, running agents, and todo progress. Always visible below your input, zero config required.</description>
-  <repository>github.com/jarrodwatts/claude-hud</repository>
+  <repository>github.com/Alert0723/cong.claude-marketplace</repository>
   <license>MIT</license>
 </plugin>
 
@@ -236,7 +226,7 @@ Technical documentation for agents who need to understand, modify, or debug Clau
       "name": "claude-hud",
       "description": "Real-time statusline HUD for Claude Code",
       "version": "0.0.1",
-      "author": { "name": "Jarrod Watts", "url": "https://github.com/jarrodwatts" }
+      "author": { "name": "conghuang", "url": "https://github.com/conghuang" }
     }
   </manifest_content>
   <note>The plugin.json contains metadata only. statusLine is NOT a valid plugin.json field.</note>
@@ -249,7 +239,7 @@ Technical documentation for agents who need to understand, modify, or debug Clau
 
 <development>
   <setup>
-    git clone https://github.com/jarrodwatts/claude-hud
+    git clone https://github.com/Alert0723/cong.claude-marketplace
     cd claude-hud
     npm ci
     npm run build
@@ -294,7 +284,7 @@ Technical documentation for agents who need to understand, modify, or debug Clau
 <troubleshooting>
   <issue name="Statusline not appearing">
     <cause>Plugin not installed or statusLine not configured</cause>
-    <solution>Run: /plugin marketplace add jarrodwatts/claude-hud</solution>
+    <solution>Run: /plugin marketplace add Alert0723/cong.claude-marketplace</solution>
     <solution>Run: /plugin install claude-hud</solution>
     <solution>Run: /claude-hud:setup</solution>
     <solution>Ensure Claude Code is v1.0.80 or later</solution>
