@@ -123,6 +123,8 @@ After choosing a preset, you can turn individual elements on or off.
 
 You can also edit the config file directly at `~/.claude/plugins/claude-hud/config.json`.
 
+See [config.example.json](config.example.json) for a sample configuration that enables all optional features.
+
 ### Options
 
 | Option | Type | Default | Description |
