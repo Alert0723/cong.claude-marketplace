@@ -106,8 +106,21 @@ export function render(ctx: RenderContext): void {
 
   lines.push(...activityLines);
 
+  // 调试输出
+  if (process.env.DEBUG?.includes('claude-hud')) {
+    console.error('[claude-hud:render] lines:', JSON.stringify(lines));
+    console.error('[claude-hud:render] headerLines:', JSON.stringify(headerLines));
+    console.error('[claude-hud:render] activityLines:', JSON.stringify(activityLines));
+  }
+
   for (const line of lines) {
-    const outputLine = `${RESET}${line.replace(/ /g, '\u00A0')}`;
+    // Skip lines that are effectively empty or single characters
+    if (visualLength(line) < 2) {
+      continue;
+    }
+    // Use normal space on Windows to avoid display issues
+    const spaceChar = process.platform === 'win32' ? ' ' : '\u00A0';
+    const outputLine = `${RESET}${line.replace(/ /g, spaceChar)}`;
     console.log(outputLine);
   }
 }
