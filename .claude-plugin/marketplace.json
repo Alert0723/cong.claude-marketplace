@@ -23,6 +23,11 @@
       "name": "plugin-dev",
       "source": "./plugin-dev",
       "description": "插件开发工具包 - Hooks、MCP、Commands、Agents、Skills 完整开发指南"
+    },
+    {
+      "name": "claude-hud",
+      "source": "./claude-hud",
+      "description": "Real-time statusline HUD for Claude Code - context health, tool activity, agent tracking, and todo progress"
     }
   ]
 }
