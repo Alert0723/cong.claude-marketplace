@@ -1,0 +1,9 @@
+{
+  "name": "pdf2skills",
+  "description": "将PDF文档转换为Claude技能 - 自动从PDF提取内容并生成技能目录结构",
+  "version": "1.0.0",
+  "author": {
+    "name": "conghuang"
+  },
+  "keywords": ["pdf", "skills", "conversion", "document", "automation"]
+}

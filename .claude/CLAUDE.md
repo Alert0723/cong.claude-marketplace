@@ -50,3 +50,49 @@ Context █████░░░░░ 45% │ Usage ██░░░░░░░
 * Agent 状态行
 * 待办事项进度行
 * 环境配置计数行
+
+## pdf2skills 插件
+
+### 功能概述
+pdf2skills 是一个将PDF文档转换为Claude技能的插件，支持以下功能：
+* PDF到Markdown转换（使用MinerU API）
+* 语义分块与密度分析
+* 知识单元（SKU）提取与融合
+* Claude技能生成与格式化
+* 路由器和术语表生成
+
+### 安装与配置
+1. 插件已集成到市场，可通过 `/plugin install pdf2skills@cong.claude-marketplace` 安装
+2. 安装后运行 `/pdf2skills:setup` 配置Python环境和API密钥
+3. API密钥配置：
+   - SiliconFlow API：用于LLM处理（https://siliconflow.cn/）
+   - MinerU API：用于PDF转Markdown（https://mineru.net/）
+4. 配置存储在 `.claude/cong.claude-marketplace.local.md` 和插件目录的 `.env` 文件中
+
+### 使用命令
+* `/pdf2skills:setup` - 环境设置（Python依赖、spaCy模型、API配置）
+* `/pdf2skills:convert <pdf文件>` - 转换PDF为Claude技能
+   - 参数：`--output-dir` 输出目录，`--language` 语言（ch/en），`--resume` 恢复模式
+
+### 输出结构
+转换生成以下目录结构：
+```
+<输出目录>/
+├── full.md                          # 提取的Markdown
+├── full_chunks/                     # 分块文档
+├── full_chunks_density/             # 语义分析
+└── full_chunks_skus/                # 知识单元
+    ├── skus/                        # 单个SKU文件
+    ├── buckets.json                 # 分组SKU
+    ├── router.json                  # 层次化路由
+    ├── glossary.json                # 领域术语表
+    └── generated_skills/            # Claude技能
+        ├── index.md                 # 技能导航
+        └── <技能名称>/SKILL.md      # 单个技能文件
+```
+
+### 使用原则
+* 大型PDF文件（>100页）建议分块处理
+* 转换过程可能需要较长时间（30+分钟）
+* 使用 `--resume` 参数可从中断处恢复
+* 生成的技能需要人工审核和优化
