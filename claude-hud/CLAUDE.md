@@ -83,7 +83,8 @@ src/
         ├── project.ts    # Line 1: model bracket + project + git
         ├── identity.ts   # Line 2a: context bar
         ├── usage.ts      # Line 2b: usage bar (combined with identity)
-        └── environment.ts # Config counts (opt-in)
+        ├── environment.ts # Config counts (opt-in)
+        └── token-details.ts # Token details (opt-in)
 ```
 
 ### Output Format (default expanded layout)
@@ -98,6 +99,7 @@ Lines 1-2 always shown. Additional lines are opt-in via config:
 - Agents line (`showAgents`): ◐ explore [haiku]: Finding auth code
 - Todos line (`showTodos`): ▸ Fix authentication bug (2/5)
 - Environment line (`showConfigCounts`): 2 CLAUDE.md | 4 rules
+- Token details line (`showTokenDetails`): Tokens in: 45k, out: 12k, cache: 8k (hit: 15%)
 
 ### Context Thresholds
 

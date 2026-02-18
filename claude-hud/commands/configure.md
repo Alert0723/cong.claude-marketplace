@@ -58,6 +58,7 @@ Questions: **Turn Off → Turn On → Git Style → Layout/Reset** (4 questions 
   - "Git status" - git:(main*) branch indicator
   - "Config counts" - 2 CLAUDE.md | 4 rules
   - "Token breakdown" - (in: 45k, cache: 12k)
+  - "Token details" - in: 45k, out: 12k, cache: 8k (hit: 15%)
   - "Output speed" - out: 42.1 tok/s
   - "Usage limits" - 5h: 25% | 7d: 10%
   - "Session duration" - ⏱️ 5m
@@ -97,6 +98,7 @@ Info items (Counts, Tokens, Usage, Speed, Duration) can be turned off via "Reset
 - options: **ONLY items currently OFF** (max 4)
   - "Config counts" - 2 CLAUDE.md | 4 rules
   - "Token breakdown" - (in: 45k, cache: 12k)
+  - "Token details" - in: 45k, out: 12k, cache: 8k (hit: 15%)
   - "Output speed" - out: 42.1 tok/s
   - "Usage limits" - 5h: 25% | 7d: 10%
   - "Usage bar style" - ██░░ 25% visual bar (only if usageBarEnabled is false)
@@ -177,6 +179,7 @@ Info items (Counts, Tokens, Usage, Speed, Duration) can be turned off via "Reset
 | Git status | `gitStatus.enabled` |
 | Config counts | `display.showConfigCounts` |
 | Token breakdown | `display.showTokenBreakdown` |
+| Token details | `display.showTokenDetails` |
 | Output speed | `display.showSpeed` |
 | Usage limits | `display.showUsage` |
 | Usage bar style | `display.usageBarEnabled` |

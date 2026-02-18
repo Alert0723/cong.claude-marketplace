@@ -8,6 +8,7 @@ import {
   renderProjectLine,
   renderEnvironmentLine,
   renderUsageLine,
+  renderTokenDetailsLine,
 } from './lines/index.js';
 import { dim, RESET } from './colors.js';
 
@@ -77,6 +78,11 @@ function renderExpanded(ctx: RenderContext): string[] {
     lines.push(`${identityLine} \u2502 ${usageLine}`);
   } else if (identityLine) {
     lines.push(identityLine);
+  }
+
+  const tokenDetailsLine = renderTokenDetailsLine(ctx);
+  if (tokenDetailsLine) {
+    lines.push(tokenDetailsLine);
   }
 
   const environmentLine = renderEnvironmentLine(ctx);
