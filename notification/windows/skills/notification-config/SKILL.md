@@ -98,6 +98,43 @@ Send notifications proactively in these scenarios:
 3. **Important milestones** - Code review done, PR created
 4. **Error alerts** - Build failed, tests not passing
 
+## Click-to-Activate Feature
+
+The notification plugin supports clicking notifications to bring the Claude terminal to the foreground.
+
+### Installation
+
+Run the installation script once to set up the protocol handler:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File "${CLAUDE_PLUGIN_ROOT}/skills/notification-config/scripts/install-protocol-handler.ps1"
+```
+
+This will:
+1. Compile the protocol handler executable
+2. Register the `claude://` protocol with Windows
+3. Enable click-to-activate functionality
+
+### Usage
+
+When you send a notification, you can optionally include a session ID:
+
+```powershell
+# Basic notification (activates any Claude window)
+powershell -NoProfile -ExecutionPolicy Bypass -File "${CLAUDE_PLUGIN_ROOT}/skills/notification-config/scripts/notify.ps1" -Title "Build Complete" -Message "All tests passed"
+
+# With session ID (activates specific session window)
+powershell -NoProfile -ExecutionPolicy Bypass -File "${CLAUDE_PLUGIN_ROOT}/skills/notification-config/scripts/notify.ps1" -Title "Build Complete" -Message "All tests passed" -SessionId "my-session-id"
+```
+
+### Uninstallation
+
+To remove the protocol handler:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File "${CLAUDE_PLUGIN_ROOT}/skills/notification-config/scripts/install-protocol-handler.ps1" -Uninstall
+```
+
 ## Operation Steps
 
 ### Configure Bark

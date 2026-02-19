@@ -1,4 +1,10 @@
-﻿param([string]$Title = "Claude Code", [string]$Message = "通知", [string]$Dir = "")
+﻿param(
+    [string]$Title = "Claude Code",
+    [string]$Message = "通知",
+    [string]$Dir = "",
+    [string]$SessionId = "",
+    [string]$ActivateUrl = "claude://activate"
+)
 
 # 如果 Dir 为空或未展开，尝试从环境变量获取
 if (-not $Dir -or $Dir -eq '${CLAUDE_PROJECT_DIR}' -or $Dir -eq '$CLAUDE_PROJECT_DIR') {
@@ -91,8 +97,17 @@ if ($shouldNotify) {
             $AppId = '{1AC14E77-02E7-4E5D-B744-2EB1AE5198B7}\WindowsPowerShell\v1.0\powershell.exe'
 
             # 创建 Toast XML 模板
+            # 构建 launch 参数和 action 参数，包含 SessionId（如果有）
+            if ($SessionId) {
+                $launchAttr = ' launch="{0}?session={1}"' -f $ActivateUrl, $SessionId
+                $actionArgs = '{0}?session={1}' -f $ActivateUrl, $SessionId
+            } else {
+                $launchAttr = ' launch="{0}"' -f $ActivateUrl
+                $actionArgs = $ActivateUrl
+            }
+
             $ToastXml = @"
-<toast>
+<toast$launchAttr>
     <visual>
         <binding template="ToastGeneric">
             <text>$([System.Security.SecurityElement]::Escape($Title))</text>
@@ -100,6 +115,9 @@ if ($shouldNotify) {
         </binding>
     </visual>
     <audio silent="true"/>
+    <actions>
+        <action content="打开会话" activationType="protocol" arguments="$actionArgs"/>
+    </actions>
 </toast>
 "@
 
@@ -111,6 +129,15 @@ if ($shouldNotify) {
             $Toast = [Windows.UI.Notifications.ToastNotification]::new($XmlDoc)
             $Toast.Tag = "ClaudeCode"
             $Toast.Group = "ClaudeCode"
+
+            # 注册激活处理（需要使用自定义协议处理程序）
+            $activated = $false
+            Register-ObjectEvent -InputObject $Toast -EventName Activated -Action {
+                param($sender, $e)
+                # 激活事件处理
+                $global:ToastActivatedArgs = $e
+                $global:ToastActivated = $true
+            } | Out-Null
 
             $Notifier = [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier($AppId)
             $Notifier.Show($Toast)
