@@ -100,7 +100,9 @@ Send notifications proactively in these scenarios:
 
 ## Click-to-Activate Feature
 
-The notification plugin supports clicking notifications to bring the Claude terminal to the foreground.
+The notification plugin supports clicking notifications to bring the Claude terminal to the foreground directly.
+
+**Note**: When you click "打开会话" (Open Session) on the notification, the Claude terminal window will be brought to the front immediately, not just flash on the taskbar.
 
 ### Installation
 
@@ -113,7 +115,17 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "${CLAUDE_PLUGIN_ROOT}/skill
 This will:
 1. Compile the protocol handler executable
 2. Register the `claude://` protocol with Windows
-3. Enable click-to-activate functionality
+3. Enable click-to-activate functionality with window bring-to-front support
+
+**After updating the C# code, you need to reinstall the protocol handler:**
+
+```powershell
+# Uninstall first (optional, but recommended)
+powershell -NoProfile -ExecutionPolicy Bypass -File "${CLAUDE_PLUGIN_ROOT}/skills/notification-config/scripts/install-protocol-handler.ps1" -Uninstall
+
+# Reinstall with updated code
+powershell -NoProfile -ExecutionPolicy Bypass -File "${CLAUDE_PLUGIN_ROOT}/skills/notification-config/scripts/install-protocol-handler.ps1"
+```
 
 ### Usage
 

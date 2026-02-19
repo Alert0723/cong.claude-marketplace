@@ -180,8 +180,42 @@ namespace ClaudeProtocolHandler
                 {
                     ShowWindow(hWnd, 9); // SW_RESTORE
                 }
-                // 设置为前台窗口
-                SetForegroundWindow(hWnd);
+
+                // 获取当前前台窗口的线程
+                IntPtr foregroundWindow = GetForegroundWindow();
+                uint foregroundThreadId = GetWindowThreadProcessId(foregroundWindow, IntPtr.Zero);
+                uint currentThreadId = GetCurrentThreadId();
+
+                // 附加到前台窗口的输入线程，允许我们操作焦点
+                if (foregroundThreadId != 0 && currentThreadId != 0)
+                {
+                    AttachThreadInput(foregroundThreadId, currentThreadId, true);
+                }
+
+                try
+                {
+                    // 使用多个 API 确保窗口置前
+                    // 先显示窗口
+                    ShowWindow(hWnd, 9); // SW_RESTORE
+                    // 将窗口带到前台
+                    BringWindowToTop(hWnd);
+                    // 设置前台窗口
+                    SetForegroundWindow(hWnd);
+                    // 设置焦点
+                    SetFocus(hWnd);
+                }
+                finally
+                {
+                    // 分离输入线程
+                    if (foregroundThreadId != 0 && currentThreadId != 0)
+                    {
+                        AttachThreadInput(foregroundThreadId, currentThreadId, false);
+                    }
+                }
+
+                // 强制重绘
+                InvalidateRect(hWnd, IntPtr.Zero, true);
+                UpdateWindow(hWnd);
             }
         }
 
@@ -239,5 +273,29 @@ namespace ClaudeProtocolHandler
 
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         static extern bool IsIconic(IntPtr hWnd);
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        static extern IntPtr GetForegroundWindow();
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        static extern uint GetWindowThreadProcessId(IntPtr hWnd, IntPtr lpdwProcessId);
+
+        [System.Runtime.InteropServices.DllImport("kernel32.dll")]
+        static extern uint GetCurrentThreadId();
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        static extern bool AttachThreadInput(uint idAttach, uint idAttachTo, bool fAttach);
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        static extern bool BringWindowToTop(IntPtr hWnd);
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        static extern IntPtr SetFocus(IntPtr hWnd);
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        static extern bool InvalidateRect(IntPtr hWnd, IntPtr lpRect, bool bErase);
+
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        static extern bool UpdateWindow(IntPtr hWnd);
     }
 }
