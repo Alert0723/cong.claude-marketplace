@@ -1,25 +1,33 @@
 import { dim } from '../colors.js';
-import { getSessionTokenDeltas } from '../../session-token-tracker.js';
 export function renderTokenDetailsLine(ctx) {
     const display = ctx.config?.display;
     if (display?.showTokenDetails !== true) {
         return null;
     }
-    const deltas = getSessionTokenDeltas(ctx.stdin);
-    if (!deltas) {
+    const usage = ctx.stdin.context_window?.current_usage;
+    if (!usage) {
         return null;
     }
-    const { inputTokens, outputTokens, cacheTotalTokens, cacheHitRate } = deltas;
-    const label = dim('Session tokens');
+    const inputTokens = usage.input_tokens ?? 0;
+    const outputTokens = usage.output_tokens ?? 0;
+    const cacheCreationTokens = usage.cache_creation_input_tokens ?? 0;
+    const cacheReadTokens = usage.cache_read_input_tokens ?? 0;
+    const cacheTotalTokens = cacheCreationTokens + cacheReadTokens;
+    // Calculate cache hit rate if there are cache tokens
+    let cacheHitRate = null;
+    if (cacheTotalTokens > 0) {
+        cacheHitRate = Math.round((cacheReadTokens / cacheTotalTokens) * 100);
+    }
+    const label = dim('Tokens');
     const parts = [];
     if (inputTokens > 0) {
-        parts.push(`in: +${formatTokens(inputTokens)}`);
+        parts.push(`in: ${formatTokens(inputTokens)}`);
     }
     if (outputTokens > 0) {
-        parts.push(`out: +${formatTokens(outputTokens)}`);
+        parts.push(`out: ${formatTokens(outputTokens)}`);
     }
     if (cacheTotalTokens > 0) {
-        parts.push(`cache: +${formatTokens(cacheTotalTokens)}`);
+        parts.push(`cache: ${formatTokens(cacheTotalTokens)}`);
         if (cacheHitRate !== null) {
             parts.push(`hit: ${cacheHitRate}%`);
         }

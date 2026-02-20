@@ -5,6 +5,7 @@ import { renderSessionLine } from '../dist/render/session-line.js';
 import { renderToolsLine } from '../dist/render/tools-line.js';
 import { renderAgentsLine } from '../dist/render/agents-line.js';
 import { renderTodosLine } from '../dist/render/todos-line.js';
+import { renderTokenDetailsLine } from '../dist/render/lines/token-details.js';
 import { getContextColor } from '../dist/render/colors.js';
 
 function baseContext() {
@@ -676,4 +677,99 @@ test('renderSessionLine combines showFileStats with showDirty and showAheadBehin
   assert.ok(line.includes('↓1'), 'expected behind count');
   assert.ok(line.includes('!3'), 'expected modified count');
   assert.ok(line.includes('✘1'), 'expected deleted count');
+});
+
+// Cache hit rate tests
+test('renderTokenDetailsLine returns null when showTokenDetails is false', () => {
+  const ctx = baseContext();
+  const line = renderTokenDetailsLine(ctx);
+  assert.equal(line, null);
+});
+
+test('renderTokenDetailsLine returns null when current_usage is missing', () => {
+  const ctx = baseContext();
+  ctx.config.display.showTokenDetails = true;
+  ctx.stdin.context_window.current_usage = null;
+  const line = renderTokenDetailsLine(ctx);
+  assert.equal(line, null);
+});
+
+test('renderTokenDetailsLine shows 100% cache hit rate when only reading cache', () => {
+  const ctx = baseContext();
+  ctx.config.display.showTokenDetails = true;
+  ctx.stdin.context_window.current_usage = {
+    input_tokens: 5000,
+    output_tokens: 2000,
+    cache_creation_input_tokens: 0,
+    cache_read_input_tokens: 8000,
+  };
+  const line = renderTokenDetailsLine(ctx);
+  assert.ok(line.includes('in: 5k'));
+  assert.ok(line.includes('out: 2k'));
+  assert.ok(line.includes('cache: 8k'));
+  assert.ok(line.includes('hit: 100%'));
+});
+
+test('renderTokenDetailsLine shows 0% cache hit rate when only creating cache', () => {
+  const ctx = baseContext();
+  ctx.config.display.showTokenDetails = true;
+  ctx.stdin.context_window.current_usage = {
+    input_tokens: 5000,
+    output_tokens: 2000,
+    cache_creation_input_tokens: 8000,
+    cache_read_input_tokens: 0,
+  };
+  const line = renderTokenDetailsLine(ctx);
+  assert.ok(line.includes('in: 5k'));
+  assert.ok(line.includes('out: 2k'));
+  assert.ok(line.includes('cache: 8k'));
+  assert.ok(line.includes('hit: 0%'));
+});
+
+test('renderTokenDetailsLine shows 50% cache hit rate with mixed cache usage', () => {
+  const ctx = baseContext();
+  ctx.config.display.showTokenDetails = true;
+  ctx.stdin.context_window.current_usage = {
+    input_tokens: 5000,
+    output_tokens: 2000,
+    cache_creation_input_tokens: 5000,
+    cache_read_input_tokens: 5000,
+  };
+  const line = renderTokenDetailsLine(ctx);
+  assert.ok(line.includes('in: 5k'));
+  assert.ok(line.includes('out: 2k'));
+  assert.ok(line.includes('cache: 10k'));
+  assert.ok(line.includes('hit: 50%'));
+});
+
+test('renderTokenDetailsLine shows 33% cache hit rate', () => {
+  const ctx = baseContext();
+  ctx.config.display.showTokenDetails = true;
+  ctx.stdin.context_window.current_usage = {
+    input_tokens: 5000,
+    output_tokens: 2000,
+    cache_creation_input_tokens: 10000,
+    cache_read_input_tokens: 5000,
+  };
+  const line = renderTokenDetailsLine(ctx);
+  assert.ok(line.includes('in: 5k'));
+  assert.ok(line.includes('out: 2k'));
+  assert.ok(line.includes('cache: 15k'));
+  assert.ok(line.includes('hit: 33%'));
+});
+
+test('renderTokenDetailsLine omits cache when no cache tokens exist', () => {
+  const ctx = baseContext();
+  ctx.config.display.showTokenDetails = true;
+  ctx.stdin.context_window.current_usage = {
+    input_tokens: 5000,
+    output_tokens: 2000,
+    cache_creation_input_tokens: 0,
+    cache_read_input_tokens: 0,
+  };
+  const line = renderTokenDetailsLine(ctx);
+  assert.ok(line.includes('in: 5k'));
+  assert.ok(line.includes('out: 2k'));
+  assert.ok(!line.includes('cache:'));
+  assert.ok(!line.includes('hit:'));
 });
