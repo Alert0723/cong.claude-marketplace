@@ -4,6 +4,5 @@
   "description": "Enhanced real-time statusline HUD for Claude Code - color themes, accurate token display, context health, tool activity, agent tracking, and todo progress",
   "author": {
     "name": "conghuang"
-  },
-  "tags": ["hud", "statusline", "monitoring", "context", "tools", "agents", "todos", "themes"]
+  }
 }
