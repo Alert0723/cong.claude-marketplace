@@ -27,7 +27,7 @@
 |------|------|------|
 | `notification-windows` | Windows | Windows 桌面通知（PowerShell） |
 | `notification-unix` | macOS/Linux | Unix 桌面通知（Shell） |
-| `claude-hud` | 全平台 | 实时状态行 HUD - 显示上下文用量、工具活动、Agent 状态等 |
+| `claude-hud` | 全平台 | 实时状态行 HUD - 显示上下文用量、工具活动、Agent 状态、待办事项等 |
 | `claude-mem` | 全平台 | 持久化内存系统 - 跨会话上下文压缩与记忆 |
 | `pdf2skills` | 全平台 | PDF 转 Claude 技能 - 自动提取内容并生成技能目录 |
 | `plugin-dev` | 全平台 | 插件开发工具包 - Hooks、MCP、Commands、Agents、Skills 开发指南 |
@@ -83,11 +83,12 @@
 
 - 当前模型和订阅类型
 - 上下文使用情况（令牌用量）
-- 使用额度（5小时/7天）
+- 5小时和7天使用额度（含重置时间）
 - Git 状态
 - 工具活动状态
 - 运行中的 Agent 状态
 - 待办事项进度
+- Max5/Max20 终端检测
 
 ### 安装
 
@@ -101,8 +102,10 @@
 ### 显示示例
 
 ```
-[Opus | Max] │ my-project git:(main*)
-Context █████░░░░░ 45% │ Usage ██░░░░░░░░ 25% (1h 30m / 5h)
+[Opus 4.5 | Pro] █████░░░░░ 45% 90k/200k │ my-project git:(main) │ 5h: 25% (3h 28m) │ 7d: 51% (Resets Fri 12:30 PM) │ ⏱️ 5m
+✓ Read ×3 | ✓ Edit ×1
+◐ explore [haiku]: Finding auth code (2m 15s)
+▸ Fix authentication bug (2/5)
 ```
 
 ### 配置选项
@@ -114,7 +117,18 @@ Context █████░░░░░ 45% │ Usage ██░░░░░░░
 - 显示/隐藏工具活动行
 - 显示/隐藏 Agent 状态行
 - 显示/隐藏待办事项进度行
-- 显示/隐藏环境配置计数行
+- 调整项目路径显示层级
+- 切换布局样式（默认/分隔符）
+
+### 增强特性（vs 原版）
+
+| 功能 | 原版 | 增强版 |
+|------|------|--------|
+| 7天使用额度 | 仅≥80%时显示 | **始终显示** |
+| 5小时重置 | 基础倒计时 | **重置时间** (如 "20:32") |
+| 7天重置 | 不显示 | **日期/时间** (如 "Resets Fri 12:30 PM") |
+| 凭据源 | 仅文件 | **文件 + macOS Keychain** |
+| 终端检测 | ❌ | ✅ Max5/Max20 |
 
 ---
 

@@ -5,7 +5,7 @@ allowed-tools: Read, Write, AskUserQuestion
 
 # Configure Claude HUD
 
-**FIRST**: Use the Read tool to load `~/.claude/plugins/claude-hud/config.json` if it exists.
+**FIRST**: Use the Read tool to load `~/.claude/plugins/claude-hud-enhanced/config.json` if it exists.
 
 Store current values and note whether config exists (determines which flow to use).
 
@@ -23,7 +23,7 @@ These are always enabled and NOT configurable:
 Questions: **Layout → Preset → Turn Off → Turn On**
 
 ### Flow B: Update Config (config exists)
-Questions: **Turn Off → Turn On → Git Style → Layout/Reset** (4 questions max)
+Questions: **Turn Off → Turn On → Git Style → Layout/Reset**
 
 ---
 
@@ -34,9 +34,8 @@ Questions: **Turn Off → Turn On → Git Style → Layout/Reset** (4 questions 
 - question: "Choose your HUD layout:"
 - multiSelect: false
 - options:
-  - "Expanded (Recommended)" - Split into semantic lines (identity, project, environment, usage)
-  - "Compact" - Everything on one line
-  - "Compact + Separators" - One line with separator before activity
+  - "Default" - Single line, all info together
+  - "Separators" - Line below header separates activity
 
 ### Q2: Preset
 - header: "Preset"
@@ -58,8 +57,6 @@ Questions: **Turn Off → Turn On → Git Style → Layout/Reset** (4 questions 
   - "Git status" - git:(main*) branch indicator
   - "Config counts" - 2 CLAUDE.md | 4 rules
   - "Token breakdown" - (in: 45k, cache: 12k)
-  - "Token details" - in: 45k, out: 12k, cache: 8k (hit: 15%) (cumulative for session)
-  - "Output speed" - out: 42.1 tok/s
   - "Usage limits" - 5h: 25% | 7d: 10%
   - "Session duration" - ⏱️ 5m
 
@@ -86,10 +83,9 @@ If preset has all items OFF (Minimal), Q3 shows "Nothing to disable - Minimal pr
   - "Agents status" - ◐ explore [haiku]: Finding code
   - "Todo progress" - ▸ Fix bug (2/5 tasks)
   - "Git status" - git:(main*) branch indicator
-  - "Usage bar style" - ██░░ 25% visual bar (only if usageBarEnabled is true)
 
 If more than 4 items ON, show Activity items (Tools, Agents, Todos, Git) first.
-Info items (Counts, Token breakdown, Token details, Usage, Speed, Duration) can be turned off via "Reset to Minimal" in Q4.
+Info items (Counts, Tokens, Usage, Duration) can be turned off via "Reset to Minimal" in Q4.
 
 ### Q2: Turn On
 - header: "Turn On"
@@ -98,10 +94,7 @@ Info items (Counts, Token breakdown, Token details, Usage, Speed, Duration) can 
 - options: **ONLY items currently OFF** (max 4)
   - "Config counts" - 2 CLAUDE.md | 4 rules
   - "Token breakdown" - (in: 45k, cache: 12k)
-  - "Token details" - in: 45k, out: 12k, cache: 8k (hit: 15%) (cumulative for session)
-  - "Output speed" - out: 42.1 tok/s
   - "Usage limits" - 5h: 25% | 7d: 10%
-  - "Usage bar style" - ██░░ 25% visual bar (only if usageBarEnabled is false)
   - "Session duration" - ⏱️ 5m
 
 ### Q3: Git Style (only if Git is currently enabled)
@@ -112,18 +105,16 @@ Info items (Counts, Token breakdown, Token details, Usage, Speed, Duration) can 
   - "Branch only" - git:(main)
   - "Branch + dirty" - git:(main*) shows uncommitted changes
   - "Full details" - git:(main* ↑2 ↓1) includes ahead/behind
-  - "File stats" - git:(main* !2 +1 ?3) Starship-compatible format
 
-**Skip Q3 if Git is OFF** - proceed to Q4.
+**Skip Q3 if Git is OFF** - show only 3 questions total, or replace with placeholder.
 
 ### Q4: Layout/Reset
 - header: "Layout/Reset"
 - question: "Change layout or reset to preset?"
 - multiSelect: false
 - options:
-  - "Keep current" - No layout/preset changes (current: Expanded/Compact/Compact + Separators)
-  - "Switch to Expanded" - Split into semantic lines (if not current)
-  - "Switch to Compact" - Everything on one line (if not current)
+  - "Keep current" - No layout/preset changes (current: Default/Separators)
+  - "Switch to Default" or "Switch to Separators" (whichever isn't current)
   - "Reset to Full" - Enable everything
   - "Reset to Essential" - Activity + git only
 
@@ -133,28 +124,18 @@ Info items (Counts, Token breakdown, Token details, Usage, Speed, Duration) can 
 
 **Full** (everything ON):
 - Activity: Tools ON, Agents ON, Todos ON
-- Info: Counts ON, Token breakdown ON, Token details ON, Usage ON, Duration ON
+- Info: Counts ON, Tokens ON, Usage ON, Duration ON
 - Git: ON (with dirty indicator, no ahead/behind)
 
 **Essential** (activity + git):
 - Activity: Tools ON, Agents ON, Todos ON
-- Info: Counts OFF, Token breakdown OFF, Token details OFF, Usage OFF, Duration ON
+- Info: Counts OFF, Tokens OFF, Usage OFF, Duration ON
 - Git: ON (with dirty indicator)
 
-**Minimal** (core only — this is the default):
+**Minimal** (core only):
 - Activity: Tools OFF, Agents OFF, Todos OFF
-- Info: Counts OFF, Token breakdown OFF, Token details OFF, Usage OFF, Duration OFF
-- Git: ON (with dirty indicator)
-
----
-
-## Layout Mapping
-
-| Option | Config |
-|--------|--------|
-| Expanded | `lineLayout: "expanded", showSeparators: false` |
-| Compact | `lineLayout: "compact", showSeparators: false` |
-| Compact + Separators | `lineLayout: "compact", showSeparators: true` |
+- Info: Counts OFF, Tokens OFF, Usage OFF, Duration OFF
+- Git: OFF
 
 ---
 
@@ -162,10 +143,9 @@ Info items (Counts, Token breakdown, Token details, Usage, Speed, Duration) can 
 
 | Option | Config |
 |--------|--------|
-| Branch only | `gitStatus: { enabled: true, showDirty: false, showAheadBehind: false, showFileStats: false }` |
-| Branch + dirty | `gitStatus: { enabled: true, showDirty: true, showAheadBehind: false, showFileStats: false }` |
-| Full details | `gitStatus: { enabled: true, showDirty: true, showAheadBehind: true, showFileStats: false }` |
-| File stats | `gitStatus: { enabled: true, showDirty: true, showAheadBehind: false, showFileStats: true }` |
+| Branch only | `gitStatus: { enabled: true, showDirty: false, showAheadBehind: false }` |
+| Branch + dirty | `gitStatus: { enabled: true, showDirty: true, showAheadBehind: false }` |
+| Full details | `gitStatus: { enabled: true, showDirty: true, showAheadBehind: true }` |
 
 ---
 
@@ -179,26 +159,12 @@ Info items (Counts, Token breakdown, Token details, Usage, Speed, Duration) can 
 | Git status | `gitStatus.enabled` |
 | Config counts | `display.showConfigCounts` |
 | Token breakdown | `display.showTokenBreakdown` |
-| Token details | `display.showTokenDetails` |
-| Output speed | `display.showSpeed` |
 | Usage limits | `display.showUsage` |
-| Usage bar style | `display.usageBarEnabled` |
 | Session duration | `display.showDuration` |
 
 **Always true (not configurable):**
 - `display.showModel: true`
 - `display.showContextBar: true`
-
----
-
-## Usage Style Mapping
-
-| Option | Config |
-|--------|--------|
-| Bar style | `display.usageBarEnabled: true` — Shows `██░░ 25% (1h 30m / 5h)` |
-| Text style | `display.usageBarEnabled: false` — Shows `5h: 25% (1h 30m)` |
-
-**Note**: Usage style only applies when `display.showUsage: true`. When 7d usage >= 80%, it also shows with the same style.
 
 ---
 
@@ -212,8 +178,8 @@ Info items (Counts, Token breakdown, Token details, Usage, Speed, Duration) can 
 
 ### For Returning Users (Flow B):
 1. Start from current config
-2. Apply Turn Off selections (set to OFF, including usageBarEnabled if selected)
-3. Apply Turn On selections (set to ON, including usageBarEnabled if selected)
+2. Apply Turn Off selections (set to OFF)
+3. Apply Turn On selections (set to ON)
 4. Apply Git Style selection (if shown)
 5. If "Reset to [preset]" selected, override with preset values
 6. If layout change selected, apply it
@@ -230,24 +196,17 @@ Info items (Counts, Token breakdown, Token details, Usage, Speed, Duration) can 
 
 1. **Summary of changes:**
 ```
-Layout: Compact → Expanded
+Layout: Default → Separators
 Git style: Branch + dirty
 Changes:
   - Usage limits: OFF → ON
   - Config counts: ON → OFF
 ```
 
-2. **Preview of HUD (Expanded layout):**
+2. **Preview of HUD:**
 ```
-[Opus | Pro] │ my-project git:(main*)
-Context ████░░░░░ 45% │ Usage ██░░░░░░░░ 25% (1h 30m / 5h)
-◐ Edit: file.ts | ✓ Read ×3
-▸ Fix auth bug (2/5)
-```
-
-**Preview of HUD (Compact layout):**
-```
-[Opus | Pro] ████░░░░░ 45% | my-project git:(main*) | 5h: 25% | ⏱️ 5m
+[Opus] ████░░░░░ 45% | my-project git:(main*) | 5h: 25% | ⏱️ 5m
+──────────────────────────────────────────────────────────────
 ◐ Edit: file.ts | ✓ Read ×3
 ▸ Fix auth bug (2/5)
 ```
@@ -258,14 +217,10 @@ Context ████░░░░░ 45% │ Usage ██░░░░░░░░
 
 ## Write Configuration
 
-Write to `~/.claude/plugins/claude-hud/config.json`.
+Write to `~/.claude/plugins/claude-hud-enhanced/config.json`.
 
 Merge with existing config, preserving:
 - `pathLevels` (not in configure flow)
-- `display.usageThreshold` (advanced config)
-- `display.environmentThreshold` (advanced config)
-
-**Migration note**: Old configs with `layout: "default"` or `layout: "separators"` are automatically migrated to the new `lineLayout` + `showSeparators` format on load.
 
 ---
 

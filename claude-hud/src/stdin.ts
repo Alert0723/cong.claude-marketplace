@@ -23,7 +23,7 @@ export async function readStdin(): Promise<StdinData | null> {
   }
 }
 
-export function getTotalTokens(stdin: StdinData): number {
+function getTotalTokens(stdin: StdinData): number {
   const usage = stdin.context_window?.current_usage;
   return (
     (usage?.input_tokens ?? 0) +
@@ -32,45 +32,41 @@ export function getTotalTokens(stdin: StdinData): number {
   );
 }
 
-/**
- * Get native percentage from Claude Code v2.1.6+ if available.
- * Returns null if not available or invalid, triggering fallback to manual calculation.
- */
-function getNativePercent(stdin: StdinData): number | null {
-  const nativePercent = stdin.context_window?.used_percentage;
-  if (typeof nativePercent === 'number' && !Number.isNaN(nativePercent)) {
-    return Math.min(100, Math.max(0, Math.round(nativePercent)));
-  }
-  return null;
-}
-
 export function getContextPercent(stdin: StdinData): number {
-  // Prefer native percentage (v2.1.6+) - accurate and matches /context
-  const native = getNativePercent(stdin);
-  if (native !== null) {
-    return native;
+  // Use used_percentage directly from API if available (matches /context command)
+  const usedPct = stdin.context_window?.used_percentage;
+  if (usedPct !== undefined && usedPct !== null) {
+    return Math.min(100, Math.floor(usedPct));
   }
 
-  // Fallback: manual calculation without buffer
+  // Fallback to calculating from tokens
   const size = stdin.context_window?.context_window_size;
+
   if (!size || size <= 0) {
     return 0;
   }
 
   const totalTokens = getTotalTokens(stdin);
-  return Math.min(100, Math.round((totalTokens / size) * 100));
+  return Math.min(100, Math.floor((totalTokens / size) * 100));
+}
+
+// Get used tokens - calculated from percentage when available to match /context
+export function getUsedTokens(stdin: StdinData): number {
+  const size = stdin.context_window?.context_window_size ?? 200000;
+  const usedPct = stdin.context_window?.used_percentage;
+
+  // If percentage is available, calculate tokens from it (matches /context)
+  if (usedPct !== undefined && usedPct !== null) {
+    return Math.floor(size * usedPct / 100);
+  }
+
+  // Fallback to direct token count
+  return getTotalTokens(stdin);
 }
 
 export function getBufferedPercent(stdin: StdinData): number {
-  // Prefer native percentage (v2.1.6+) - accurate and matches /context
-  // Native percentage already accounts for context correctly, no buffer needed
-  const native = getNativePercent(stdin);
-  if (native !== null) {
-    return native;
-  }
-
-  // Fallback: manual calculation with buffer for older Claude Code versions
   const size = stdin.context_window?.context_window_size;
+
   if (!size || size <= 0) {
     return 0;
   }
@@ -82,19 +78,4 @@ export function getBufferedPercent(stdin: StdinData): number {
 
 export function getModelName(stdin: StdinData): string {
   return stdin.model?.display_name ?? stdin.model?.id ?? 'Unknown';
-}
-
-export function isBedrockModelId(modelId?: string): boolean {
-  if (!modelId) {
-    return false;
-  }
-  const normalized = modelId.toLowerCase();
-  return normalized.includes('anthropic.claude-');
-}
-
-export function getProviderLabel(stdin: StdinData): string | null {
-  if (isBedrockModelId(stdin.model?.id)) {
-    return 'Bedrock';
-  }
-  return null;
 }

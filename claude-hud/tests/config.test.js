@@ -10,12 +10,9 @@ test('loadConfig returns valid config structure', async () => {
   // pathLevels must be 1, 2, or 3
   assert.ok([1, 2, 3].includes(config.pathLevels), 'pathLevels should be 1, 2, or 3');
 
-  // lineLayout must be valid
-  const validLineLayouts = ['compact', 'expanded'];
-  assert.ok(validLineLayouts.includes(config.lineLayout), 'lineLayout should be valid');
-
-  // showSeparators must be boolean
-  assert.equal(typeof config.showSeparators, 'boolean', 'showSeparators should be boolean');
+  // layout must be valid
+  const validLayouts = ['default', 'condensed', 'separators'];
+  assert.ok(validLayouts.includes(config.layout), 'layout should be valid');
 
   // gitStatus object with expected properties
   assert.equal(typeof config.gitStatus, 'object');
@@ -27,10 +24,8 @@ test('loadConfig returns valid config structure', async () => {
   assert.equal(typeof config.display, 'object');
   assert.equal(typeof config.display.showModel, 'boolean');
   assert.equal(typeof config.display.showContextBar, 'boolean');
-  assert.ok(['percent', 'tokens'].includes(config.display.contextValue), 'contextValue should be valid');
   assert.equal(typeof config.display.showConfigCounts, 'boolean');
   assert.equal(typeof config.display.showDuration, 'boolean');
-  assert.equal(typeof config.display.showSpeed, 'boolean');
   assert.equal(typeof config.display.showTokenBreakdown, 'boolean');
   assert.equal(typeof config.display.showUsage, 'boolean');
   assert.equal(typeof config.display.showTools, 'boolean');

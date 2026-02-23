@@ -125,11 +125,10 @@ test('main includes git status in render context', async () => {
     getGitStatus: async () => ({ branch: 'feature/test', isDirty: false, ahead: 0, behind: 0 }),
     getUsage: async () => null,
     loadConfig: async () => ({
-      lineLayout: 'compact',
-      showSeparators: false,
+      layout: 'default',
       pathLevels: 1,
-      gitStatus: { enabled: true, showDirty: true, showAheadBehind: false, showFileStats: false },
-      display: { showModel: true, showContextBar: true, contextValue: 'percent', showConfigCounts: true, showDuration: true, showSpeed: false, showTokenBreakdown: true, showTokenDetails: false, showUsage: true, showTools: true, showAgents: true, showTodos: true, autocompactBuffer: 'enabled', usageThreshold: 0, sevenDayThreshold: 80, environmentThreshold: 0 },
+      gitStatus: { enabled: true, showDirty: true, showAheadBehind: false },
+      display: { showModel: true, showContextBar: true, showConfigCounts: true, showDuration: true, showTokenBreakdown: true, showTools: true, showAgents: true, showTodos: true },
     }),
     render: (ctx) => {
       renderedContext = ctx;

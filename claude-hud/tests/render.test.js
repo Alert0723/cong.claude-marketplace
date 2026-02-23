@@ -5,7 +5,6 @@ import { renderSessionLine } from '../dist/render/session-line.js';
 import { renderToolsLine } from '../dist/render/tools-line.js';
 import { renderAgentsLine } from '../dist/render/agents-line.js';
 import { renderTodosLine } from '../dist/render/todos-line.js';
-import { renderTokenDetailsLine } from '../dist/render/lines/token-details.js';
 import { getContextColor } from '../dist/render/colors.js';
 
 function baseContext() {
@@ -14,6 +13,7 @@ function baseContext() {
       model: { display_name: 'Opus' },
       context_window: {
         context_window_size: 200000,
+        used_percentage: 5,  // Use API percentage directly
         current_usage: {
           input_tokens: 10000,
           cache_creation_input_tokens: 0,
@@ -30,18 +30,19 @@ function baseContext() {
     gitStatus: null,
     usageData: null,
     config: {
-      lineLayout: 'compact',
-      showSeparators: false,
+      layout: 'default',
       pathLevels: 1,
-      gitStatus: { enabled: true, showDirty: true, showAheadBehind: false, showFileStats: false },
-      display: { showModel: true, showContextBar: true, contextValue: 'percent', showConfigCounts: true, showDuration: true, showSpeed: false, showTokenBreakdown: true, showTokenDetails: false, showUsage: true, usageBarEnabled: false, showTools: true, showAgents: true, showTodos: true, autocompactBuffer: 'enabled', usageThreshold: 0, sevenDayThreshold: 80, environmentThreshold: 0 },
+      colorTheme: 'blue',
+      gitStatus: { enabled: true, showDirty: true, showAheadBehind: false },
+      display: { showModel: true, showContextBar: true, showConfigCounts: true, showDuration: true, showTokenBreakdown: true, showUsage: true, showTools: true, showAgents: true, showTodos: true, showLastMessage: false, autocompactBuffer: 'enabled' },
     },
   };
 }
 
 test('renderSessionLine adds token breakdown when context is high', () => {
   const ctx = baseContext();
-  // For 90%: (tokens + 45000) / 200000 = 0.9 → tokens = 135000
+  // Set used_percentage to 90% to trigger token breakdown
+  ctx.stdin.context_window.used_percentage = 90;
   ctx.stdin.context_window.current_usage.input_tokens = 135000;
   const line = renderSessionLine(ctx);
   assert.ok(line.includes('in:'), 'expected token breakdown');
@@ -51,21 +52,22 @@ test('renderSessionLine adds token breakdown when context is high', () => {
 test('renderSessionLine includes duration and formats large tokens', () => {
   const ctx = baseContext();
   ctx.sessionDuration = '1m';
-  // Use 1M context, need 85%+ to show breakdown
-  // For 85%: (tokens + 45000) / 1000000 = 0.85 → tokens = 805000
+  // Use 1M context, set used_percentage to 85%+ to show breakdown
   ctx.stdin.context_window.context_window_size = 1000000;
+  ctx.stdin.context_window.used_percentage = 85;
   ctx.stdin.context_window.current_usage.input_tokens = 805000;
   ctx.stdin.context_window.current_usage.cache_read_input_tokens = 1500;
   const line = renderSessionLine(ctx);
   assert.ok(line.includes('⏱️'));
-  assert.ok(line.includes('805k') || line.includes('805.0k'), 'expected large input token display');
-  assert.ok(line.includes('2k'), 'expected cache token display');
+  // Token display now shows calculated from percentage: 850k (85% of 1M)
+  assert.ok(line.includes('850k'), 'expected token display from percentage');
 });
 
 test('renderSessionLine handles missing input tokens and cache creation usage', () => {
   const ctx = baseContext();
-  // For 90%: (tokens + 45000) / 200000 = 0.9 → tokens = 135000 (all from cache)
+  // Set used_percentage to 90% directly
   ctx.stdin.context_window.context_window_size = 200000;
+  ctx.stdin.context_window.used_percentage = 90;
   ctx.stdin.context_window.current_usage = {
     cache_creation_input_tokens: 135000,
   };
@@ -76,8 +78,9 @@ test('renderSessionLine handles missing input tokens and cache creation usage', 
 
 test('renderSessionLine handles missing cache token fields', () => {
   const ctx = baseContext();
-  // For 90%: (tokens + 45000) / 200000 = 0.9 → tokens = 135000
+  // Set used_percentage to 90% to trigger token breakdown display
   ctx.stdin.context_window.context_window_size = 200000;
+  ctx.stdin.context_window.used_percentage = 90;
   ctx.stdin.context_window.current_usage = {
     input_tokens: 135000,
   };
@@ -124,15 +127,6 @@ test('renderSessionLine handles root path gracefully', () => {
   ctx.stdin.cwd = '/';
   const line = renderSessionLine(ctx);
   assert.ok(line.includes('[Opus]'));
-});
-
-test('renderSessionLine supports token-based context display', () => {
-  const ctx = baseContext();
-  ctx.config.display.contextValue = 'tokens';
-  ctx.stdin.context_window.context_window_size = 200000;
-  ctx.stdin.context_window.current_usage.input_tokens = 12345;
-  const line = renderSessionLine(ctx);
-  assert.ok(line.includes('12k/200k'), 'should include token counts');
 });
 
 test('renderSessionLine omits project name when cwd is undefined', () => {
@@ -382,7 +376,7 @@ test('renderToolsLine returns null when no tools exist', () => {
 });
 
 // Usage display tests
-test('renderSessionLine displays plan name in model bracket', () => {
+test('renderSessionLine displays model name without plan name', () => {
   const ctx = baseContext();
   ctx.usageData = {
     planName: 'Max',
@@ -393,28 +387,11 @@ test('renderSessionLine displays plan name in model bracket', () => {
   };
   const line = renderSessionLine(ctx);
   assert.ok(line.includes('Opus'), 'should include model name');
-  assert.ok(line.includes('Max'), 'should include plan name');
+  assert.ok(!line.includes('Max'), 'should not include plan name');
 });
 
-test('renderSessionLine shows Bedrock label and hides usage for bedrock model ids', () => {
+test('renderSessionLine displays usage percentages (7d always shown)', () => {
   const ctx = baseContext();
-  ctx.stdin.model = { display_name: 'Sonnet', id: 'anthropic.claude-3-5-sonnet-20240620-v1:0' };
-  ctx.usageData = {
-    planName: 'Max',
-    fiveHour: 23,
-    sevenDay: 45,
-    fiveHourResetAt: null,
-    sevenDayResetAt: null,
-  };
-  const line = renderSessionLine(ctx);
-  assert.ok(line.includes('Sonnet'), 'should include model name');
-  assert.ok(line.includes('Bedrock'), 'should include Bedrock label');
-  assert.ok(!line.includes('5h:'), 'should hide usage display');
-});
-
-test('renderSessionLine displays usage percentages (7d hidden when low)', () => {
-  const ctx = baseContext();
-  ctx.config.display.sevenDayThreshold = 80;
   ctx.usageData = {
     planName: 'Pro',
     fiveHour: 6,
@@ -424,13 +401,13 @@ test('renderSessionLine displays usage percentages (7d hidden when low)', () => 
   };
   const line = renderSessionLine(ctx);
   assert.ok(line.includes('5h:'), 'should include 5h label');
-  assert.ok(!line.includes('7d:'), 'should NOT include 7d when below 80%');
+  assert.ok(line.includes('7d:'), 'should ALWAYS include 7d (enhanced behavior)');
   assert.ok(line.includes('6%'), 'should include 5h percentage');
+  assert.ok(line.includes('13%'), 'should include 7d percentage');
 });
 
 test('renderSessionLine shows 7d when approaching limit (>=80%)', () => {
   const ctx = baseContext();
-  ctx.config.display.sevenDayThreshold = 80;
   ctx.usageData = {
     planName: 'Pro',
     fiveHour: 45,
@@ -442,21 +419,6 @@ test('renderSessionLine shows 7d when approaching limit (>=80%)', () => {
   assert.ok(line.includes('5h:'), 'should include 5h label');
   assert.ok(line.includes('7d:'), 'should include 7d when >= 80%');
   assert.ok(line.includes('85%'), 'should include 7d percentage');
-});
-
-test('renderSessionLine respects sevenDayThreshold override', () => {
-  const ctx = baseContext();
-  ctx.config.display.sevenDayThreshold = 0;
-  ctx.usageData = {
-    planName: 'Pro',
-    fiveHour: 10,
-    sevenDay: 5,
-    fiveHourResetAt: null,
-    sevenDayResetAt: null,
-  };
-
-  const line = renderSessionLine(ctx);
-  assert.ok(line.includes('7d:'), 'should include 7d when threshold is 0');
 });
 
 test('renderSessionLine shows 5hr reset countdown', () => {
@@ -476,17 +438,20 @@ test('renderSessionLine shows 5hr reset countdown', () => {
 
 test('renderSessionLine displays limit reached warning', () => {
   const ctx = baseContext();
-  const resetTime = new Date(Date.now() + 3600000); // 1 hour from now
+  const fiveHourReset = new Date(Date.now() + 3600000); // 1 hour from now
+  const sevenDayReset = new Date(Date.now() + 259200000); // 3 days from now
   ctx.usageData = {
     planName: 'Pro',
     fiveHour: 100,
     sevenDay: 45,
-    fiveHourResetAt: resetTime,
-    sevenDayResetAt: null,
+    fiveHourResetAt: fiveHourReset,
+    sevenDayResetAt: sevenDayReset,
   };
   const line = renderSessionLine(ctx);
-  assert.ok(line.includes('Limit reached'), 'should show limit reached');
-  assert.ok(line.includes('resets'), 'should show reset time');
+  assert.ok(line.includes('5h limit'), 'should show 5h limit warning');
+  assert.ok(line.includes('Resets'), 'should show reset time');
+  assert.ok(line.includes('7d:'), 'should always show 7d usage');
+  assert.ok(line.includes('45%'), 'should include 7d percentage');
 });
 
 test('renderSessionLine displays -- for null usage values', () => {
@@ -520,12 +485,10 @@ test('renderSessionLine displays warning when API is unavailable', () => {
     fiveHourResetAt: null,
     sevenDayResetAt: null,
     apiUnavailable: true,
-    apiError: 'http-401',
   };
   const line = renderSessionLine(ctx);
   assert.ok(line.includes('usage:'), 'should show usage label');
   assert.ok(line.includes('⚠'), 'should show warning indicator');
-  assert.ok(line.includes('401'), 'should include error code');
   assert.ok(!line.includes('5h:'), 'should not show 5h when API unavailable');
 });
 
@@ -545,29 +508,29 @@ test('renderSessionLine hides usage when showUsage config is false (hybrid toggl
   assert.ok(!line.includes('Pro'), 'should not show plan name when showUsage is false');
 });
 
-test('renderSessionLine uses buffered percent when autocompactBuffer is enabled', () => {
+test('renderSessionLine uses API used_percentage when available', () => {
   const ctx = baseContext();
-  // 10000 tokens / 200000 = 5% raw, + 22.5% buffer = 28% buffered (rounded)
+  // When used_percentage is available from API, it should be used directly
+  ctx.stdin.context_window.used_percentage = 28;
   ctx.stdin.context_window.current_usage.input_tokens = 10000;
-  ctx.config.display.autocompactBuffer = 'enabled';
   const line = renderSessionLine(ctx);
-  // Should show ~28% (buffered), not 5% (raw)
-  assert.ok(line.includes('28%'), `expected buffered percent 28%, got: ${line}`);
+  // Should show 28% from API percentage
+  assert.ok(line.includes('28%'), `expected API percent 28%, got: ${line}`);
 });
 
-test('renderSessionLine uses raw percent when autocompactBuffer is disabled', () => {
+test('renderSessionLine falls back to calculated percent when API percentage unavailable', () => {
   const ctx = baseContext();
-  // 10000 tokens / 200000 = 5% raw
+  // 10000 tokens / 200000 = 5% (floor)
+  delete ctx.stdin.context_window.used_percentage;
   ctx.stdin.context_window.current_usage.input_tokens = 10000;
-  ctx.config.display.autocompactBuffer = 'disabled';
   const line = renderSessionLine(ctx);
-  // Should show 5% (raw), not 28% (buffered)
-  assert.ok(line.includes('5%'), `expected raw percent 5%, got: ${line}`);
+  // Should show 5% calculated from tokens
+  assert.ok(line.includes('5%'), `expected calculated percent 5%, got: ${line}`);
 });
 
-test('render adds separator line when showSeparators is true and activity exists', () => {
+test('render adds separator line when layout is separators and activity exists', () => {
   const ctx = baseContext();
-  ctx.config.showSeparators = true;
+  ctx.config.layout = 'separators';
   ctx.transcript.tools = [
     { id: 'tool-1', name: 'Read', status: 'completed', startTime: new Date(0), endTime: new Date(0), duration: 0 },
   ];
@@ -581,13 +544,13 @@ test('render adds separator line when showSeparators is true and activity exists
     console.log = originalLog;
   }
 
-  assert.ok(logs.length > 1, 'should render multiple lines');
-  assert.ok(logs.some(l => l.includes('─')), 'should include separator line');
+  assert.ok(logs.length >= 2, 'should have at least 2 lines');
+  assert.ok(logs.some(l => l.includes('─')), 'should include separator character');
 });
 
-test('render omits separator when showSeparators is true but no activity', () => {
+test('render omits separator when layout is separators but no activity', () => {
   const ctx = baseContext();
-  ctx.config.showSeparators = true;
+  ctx.config.layout = 'separators';
 
   const logs = [];
   const originalLog = console.log;
@@ -598,178 +561,7 @@ test('render omits separator when showSeparators is true but no activity', () =>
     console.log = originalLog;
   }
 
+  assert.equal(logs.length, 1, 'should only have session line');
   assert.ok(!logs.some(l => l.includes('─')), 'should not include separator');
 });
 
-// fileStats tests
-test('renderSessionLine displays file stats when showFileStats is true', () => {
-  const ctx = baseContext();
-  ctx.stdin.cwd = '/tmp/my-project';
-  ctx.config.gitStatus.showFileStats = true;
-  ctx.gitStatus = {
-    branch: 'main',
-    isDirty: true,
-    ahead: 0,
-    behind: 0,
-    fileStats: { modified: 2, added: 1, deleted: 0, untracked: 3 },
-  };
-  const line = renderSessionLine(ctx);
-  assert.ok(line.includes('!2'), 'expected modified count');
-  assert.ok(line.includes('+1'), 'expected added count');
-  assert.ok(line.includes('?3'), 'expected untracked count');
-  assert.ok(!line.includes('✘'), 'should not show deleted when 0');
-});
-
-test('renderSessionLine omits file stats when showFileStats is false', () => {
-  const ctx = baseContext();
-  ctx.stdin.cwd = '/tmp/my-project';
-  ctx.config.gitStatus.showFileStats = false;
-  ctx.gitStatus = {
-    branch: 'main',
-    isDirty: true,
-    ahead: 0,
-    behind: 0,
-    fileStats: { modified: 2, added: 1, deleted: 0, untracked: 3 },
-  };
-  const line = renderSessionLine(ctx);
-  assert.ok(!line.includes('!2'), 'should not show modified count');
-  assert.ok(!line.includes('+1'), 'should not show added count');
-});
-
-test('renderSessionLine handles missing showFileStats config (backward compatibility)', () => {
-  const ctx = baseContext();
-  ctx.stdin.cwd = '/tmp/my-project';
-  // Simulate old config without showFileStats
-  delete ctx.config.gitStatus.showFileStats;
-  ctx.gitStatus = {
-    branch: 'main',
-    isDirty: true,
-    ahead: 0,
-    behind: 0,
-    fileStats: { modified: 2, added: 1, deleted: 0, untracked: 3 },
-  };
-  // Should not crash and should not show file stats (default is false)
-  const line = renderSessionLine(ctx);
-  assert.ok(line.includes('git:('), 'should still show git info');
-  assert.ok(!line.includes('!2'), 'should not show file stats when config missing');
-});
-
-test('renderSessionLine combines showFileStats with showDirty and showAheadBehind', () => {
-  const ctx = baseContext();
-  ctx.stdin.cwd = '/tmp/my-project';
-  ctx.config.gitStatus = {
-    enabled: true,
-    showDirty: true,
-    showAheadBehind: true,
-    showFileStats: true,
-  };
-  ctx.gitStatus = {
-    branch: 'feature',
-    isDirty: true,
-    ahead: 2,
-    behind: 1,
-    fileStats: { modified: 3, added: 0, deleted: 1, untracked: 0 },
-  };
-  const line = renderSessionLine(ctx);
-  assert.ok(line.includes('feature'), 'expected branch name');
-  assert.ok(line.includes('*'), 'expected dirty indicator');
-  assert.ok(line.includes('↑2'), 'expected ahead count');
-  assert.ok(line.includes('↓1'), 'expected behind count');
-  assert.ok(line.includes('!3'), 'expected modified count');
-  assert.ok(line.includes('✘1'), 'expected deleted count');
-});
-
-// Cache hit rate tests
-test('renderTokenDetailsLine returns null when showTokenDetails is false', () => {
-  const ctx = baseContext();
-  const line = renderTokenDetailsLine(ctx);
-  assert.equal(line, null);
-});
-
-test('renderTokenDetailsLine returns null when current_usage is missing', () => {
-  const ctx = baseContext();
-  ctx.config.display.showTokenDetails = true;
-  ctx.stdin.context_window.current_usage = null;
-  const line = renderTokenDetailsLine(ctx);
-  assert.equal(line, null);
-});
-
-test('renderTokenDetailsLine shows 100% cache hit rate when only reading cache', () => {
-  const ctx = baseContext();
-  ctx.config.display.showTokenDetails = true;
-  ctx.stdin.context_window.current_usage = {
-    input_tokens: 5000,
-    output_tokens: 2000,
-    cache_creation_input_tokens: 0,
-    cache_read_input_tokens: 8000,
-  };
-  const line = renderTokenDetailsLine(ctx);
-  assert.ok(line.includes('in: 5k'));
-  assert.ok(line.includes('out: 2k'));
-  assert.ok(line.includes('cache: 8k'));
-  assert.ok(line.includes('hit: 100%'));
-});
-
-test('renderTokenDetailsLine shows 0% cache hit rate when only creating cache', () => {
-  const ctx = baseContext();
-  ctx.config.display.showTokenDetails = true;
-  ctx.stdin.context_window.current_usage = {
-    input_tokens: 5000,
-    output_tokens: 2000,
-    cache_creation_input_tokens: 8000,
-    cache_read_input_tokens: 0,
-  };
-  const line = renderTokenDetailsLine(ctx);
-  assert.ok(line.includes('in: 5k'));
-  assert.ok(line.includes('out: 2k'));
-  assert.ok(line.includes('cache: 8k'));
-  assert.ok(line.includes('hit: 0%'));
-});
-
-test('renderTokenDetailsLine shows 50% cache hit rate with mixed cache usage', () => {
-  const ctx = baseContext();
-  ctx.config.display.showTokenDetails = true;
-  ctx.stdin.context_window.current_usage = {
-    input_tokens: 5000,
-    output_tokens: 2000,
-    cache_creation_input_tokens: 5000,
-    cache_read_input_tokens: 5000,
-  };
-  const line = renderTokenDetailsLine(ctx);
-  assert.ok(line.includes('in: 5k'));
-  assert.ok(line.includes('out: 2k'));
-  assert.ok(line.includes('cache: 10k'));
-  assert.ok(line.includes('hit: 50%'));
-});
-
-test('renderTokenDetailsLine shows 33% cache hit rate', () => {
-  const ctx = baseContext();
-  ctx.config.display.showTokenDetails = true;
-  ctx.stdin.context_window.current_usage = {
-    input_tokens: 5000,
-    output_tokens: 2000,
-    cache_creation_input_tokens: 10000,
-    cache_read_input_tokens: 5000,
-  };
-  const line = renderTokenDetailsLine(ctx);
-  assert.ok(line.includes('in: 5k'));
-  assert.ok(line.includes('out: 2k'));
-  assert.ok(line.includes('cache: 15k'));
-  assert.ok(line.includes('hit: 33%'));
-});
-
-test('renderTokenDetailsLine omits cache when no cache tokens exist', () => {
-  const ctx = baseContext();
-  ctx.config.display.showTokenDetails = true;
-  ctx.stdin.context_window.current_usage = {
-    input_tokens: 5000,
-    output_tokens: 2000,
-    cache_creation_input_tokens: 0,
-    cache_read_input_tokens: 0,
-  };
-  const line = renderTokenDetailsLine(ctx);
-  assert.ok(line.includes('in: 5k'));
-  assert.ok(line.includes('out: 2k'));
-  assert.ok(!line.includes('cache:'));
-  assert.ok(!line.includes('hit:'));
-});

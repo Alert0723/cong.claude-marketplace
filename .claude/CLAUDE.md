@@ -32,24 +32,31 @@ claude-hud 是一个实时状态行 HUD 插件，显示以下信息：
 * 工具活动状态
 * 运行中的 Agent 状态
 * 待办事项进度
+* 5小时和7天使用额度（含重置时间）
+* Max5/Max20 终端检测
 
 ### 安装与配置
-1. 插件已集成到市场，可通过 `/plugin install claude-hud` 安装
+1. 插件已集成到市场，可通过 `/plugin install claude-hud@cong.claude-marketplace` 安装
 2. 安装后运行 `/claude-hud:setup` 配置状态行
 3. 使用 `/claude-hud:configure` 自定义显示选项
 
 ### 显示内容
 默认显示两行：
 ```
-[Opus | Max] │ my-project git:(main*)
-Context █████░░░░░ 45% │ Usage ██░░░░░░░░ 25% (1h 30m / 5h)
+[Opus 4.5 | Pro] █████░░░░░ 45% 90k/200k │ my-project git:(main) │ 5h: 25% (3h 28m) │ 7d: 51% (Resets Fri 12:30 PM) │ ⏱️ 5m
+✓ Read ×3 | ✓ Edit ×1
 ```
 
 可选显示行（通过配置启用）：
 * 工具活动行
 * Agent 状态行
 * 待办事项进度行
-* 环境配置计数行
+
+### 增强特性
+* 始终显示7天使用额度
+* 显示精确重置时间（如 "Resets 20:32"）
+* 支持 macOS Keychain 凭据
+* Max5/Max20 终端检测
 
 ## pdf2skills 插件
 

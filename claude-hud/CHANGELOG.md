@@ -2,97 +2,38 @@
 
 All notable changes to Claude HUD will be documented in this file.
 
-## [0.0.7] - 2026-02-06
+## [0.0.6] - 2026-02-09
 
 ### Changed
-- **Redesigned default layout** — clean 2-line display replaces the previous multi-line default
-  - Line 1: `[Opus | Max] │ my-project git:(main*)`
-  - Line 2: `Context █████░░░░░ 45% │ Usage ██░░░░░░░░ 25% (1h 30m / 5h)`
-- Model bracket moved to project line (line 1)
-- Context and usage bars combined onto a single line with `│` separator
-- Shortened labels: "Context Window" → "Context", "Usage Limits" → "Usage"
-- Consistent `dim()` styling on both labels
-- All optional features hidden by default: tools, agents, todos, duration, config counts
-- Bedrock provider detection (#111)
-- Output speed display (#110)
-- Token context display option (#108)
-- Seven-day usage threshold config (#107)
-
-### Added
-- Setup onboarding now offers optional features (tools, agents & todos, session info) before finishing
-- `display.showSpeed` config option for output token speed
-
-### Fixed
-- Show API failure reason in usage display (#109)
-- Support task todo updates in transcript parsing (#106)
-- Keep HUD to one line in compact mode (#105)
-- Use Platform context instead of uname for setup detection (#95)
+- Version bump
 
 ---
 
-## [0.0.6] - 2026-01-14
-
-### Added
-- **Expanded multi-line layout mode** - splits the overloaded session line into semantic lines (#76)
-  - Identity line: model, plan, context bar, duration
-  - Project line: path, git status
-  - Environment line: config counts (CLAUDE.md, rules, MCPs, hooks)
-  - Usage line: rate limits with reset times
-- New config options:
-  - `lineLayout`: `'compact'` | `'expanded'` (default: `'expanded'` for new users)
-  - `showSeparators`: boolean (orthogonal to layout)
-  - `display.usageThreshold`: show usage line only when >= N%
-  - `display.environmentThreshold`: show env line only when counts >= N
-
-### Changed
-- Default layout is now `expanded` for new installations
-- Threshold logic uses `max(5h, 7d)` to ensure high 7-day usage isn't hidden
+## [0.0.5] - 2026-02-06
 
 ### Fixed
-- Ghost installation detection and cleanup in setup command (#75)
+- Fix all command references from `claude-hud` to `claude-hud-enhanced` across docs
+  - Resolves "Unknown skill: claude-hud:setup" error during installation
+  - Updated config paths to `~/.claude/plugins/claude-hud-enhanced/`
+  - Updated repo URLs in CLAUDE.README.md
 
-### Migration
-- Existing configs with `layout: "default"` automatically migrate to `lineLayout: "compact"`
-- Existing configs with `layout: "separators"` migrate to `lineLayout: "compact"` + `showSeparators: true`
-
----
-
-## [0.0.5] - 2026-01-14
-
-### Added
-- Native context percentage support for Claude Code v2.1.6+
-  - Uses `used_percentage` field from stdin when available (accurate, matches `/context`)
-  - Automatic fallback to manual calculation for older versions
-  - Handles edge cases: NaN, negative values, values >100
-- `display.autocompactBuffer` config option (`'enabled'` | `'disabled'`, default: `'enabled'`)
+### Changed
+- Context percentage now uses percentage-based buffer (22.5%) instead of hardcoded 45k tokens
+  - Scales correctly for enterprise context windows (>200k)
+- Add `display.autocompactBuffer` config option (`'enabled'` | `'disabled'`, default: `'enabled'`)
   - `'enabled'`: Shows buffered % (matches `/context` when autocompact ON) - **default**
   - `'disabled'`: Shows raw % (matches `/context` when autocompact OFF)
-- EXDEV cross-device error detection for Linux plugin installation (#53)
-
-### Changed
-- Context percentage now uses percentage-based buffer (22.5%) instead of hardcoded 45k tokens (#55)
-  - Scales correctly for enterprise context windows (>200k)
-- Remove automatic PR review workflow (#67)
-
-### Fixed
-- Git status: move `--no-optional-locks` to correct position as global git option (#65)
-- Prevent stale `index.lock` files during git operations (#63)
-- Exclude disabled MCP servers from count (#47)
-- Reconvert Date objects when reading from usage API cache (#45)
 
 ### Credits
-- Ideas from [#30](https://github.com/Alert0723/cong.claude-marketplace/pull/30) ([@r-firpo](https://github.com/r-firpo)), [#43](https://github.com/Alert0723/cong.claude-marketplace/pull/43) ([@yansircc](https://github.com/yansircc)), [#49](https://github.com/Alert0723/cong.claude-marketplace/pull/49) ([@StephenJoshii](https://github.com/StephenJoshii)) informed the autocompact solution
-
-### Dependencies
-- Bump @types/node from 25.0.3 to 25.0.6 (#61)
+- Ideas from [#30](https://github.com/jarrodwatts/claude-hud/pull/30) ([@r-firpo](https://github.com/r-firpo)), [#43](https://github.com/jarrodwatts/claude-hud/pull/43) ([@yansircc](https://github.com/yansircc)), [#49](https://github.com/jarrodwatts/claude-hud/pull/49) ([@StephenJoshii](https://github.com/StephenJoshii)) informed the final solution
 
 ---
 
 ## [0.0.4] - 2026-01-07
 
 ### Added
-- Configuration system via `~/.claude/plugins/claude-hud/config.json`
-- Interactive `/claude-hud:configure` skill for in-Claude configuration
+- Configuration system via `~/.claude/plugins/claude-hud-enhanced/config.json`
+- Interactive `/claude-hud-enhanced:configure` skill for in-Claude configuration
 - Usage API integration showing 5h/7d rate limits (Pro/Max/Team)
 - Git status with dirty indicator and ahead/behind counts
 - Configurable path levels (1-3 directory segments)
