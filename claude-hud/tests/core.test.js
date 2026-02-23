@@ -6,7 +6,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseTranscript } from '../dist/transcript.js';
 import { countConfigs } from '../dist/config-reader.js';
-import { getContextPercent, getBufferedPercent, getModelName } from '../dist/stdin.js';
+import { getContextPercent, getBufferedPercent, getModelName, getProviderLabel, isBedrockModelId } from '../dist/stdin.js';
 import * as fs from 'node:fs';
 
 test('getContextPercent returns 0 when data is missing', () => {
@@ -17,7 +17,7 @@ test('getContextPercent returns 0 when data is missing', () => {
 });
 
 test('getContextPercent returns raw percentage without buffer', () => {
-  // 55000 / 200000 = 27.5% → rounds to 27% (floor)
+  // 55000 / 200000 = 27.5% → rounds to 28%
   const percent = getContextPercent({
     context_window: {
       context_window_size: 200000,
@@ -29,22 +29,7 @@ test('getContextPercent returns raw percentage without buffer', () => {
     },
   });
 
-  assert.equal(percent, 27);
-});
-
-test('getContextPercent prefers used_percentage from API when available', () => {
-  // When used_percentage is provided, it should be used directly
-  const percent = getContextPercent({
-    context_window: {
-      context_window_size: 200000,
-      used_percentage: 45.7,
-      current_usage: {
-        input_tokens: 30000,
-      },
-    },
-  });
-
-  assert.equal(percent, 45); // floor of 45.7
+  assert.equal(percent, 28);
 });
 
 test('getBufferedPercent includes 22.5% buffer', () => {
@@ -64,7 +49,7 @@ test('getBufferedPercent includes 22.5% buffer', () => {
 });
 
 test('getContextPercent handles missing input tokens', () => {
-  // 5000 / 200000 = 2.5% → rounds to 2% (floor)
+  // 5000 / 200000 = 2.5% → rounds to 3%
   const percent = getContextPercent({
     context_window: {
       context_window_size: 200000,
@@ -75,12 +60,12 @@ test('getContextPercent handles missing input tokens', () => {
     },
   });
 
-  assert.equal(percent, 2);
+  assert.equal(percent, 3);
 });
 
 test('getBufferedPercent scales to larger context windows', () => {
   // Test with 1M context window: 45000 tokens + (1000000 * 0.225) buffer
-  // Raw: 45000 / 1000000 = 4.5% → 4% (floor)
+  // Raw: 45000 / 1000000 = 4.5% → 5%
   // Buffered: (45000 + 225000) / 1000000 = 27% → 27%
   const rawPercent = getContextPercent({
     context_window: {
@@ -95,14 +80,93 @@ test('getBufferedPercent scales to larger context windows', () => {
     },
   });
 
-  assert.equal(rawPercent, 4);
+  assert.equal(rawPercent, 5);
   assert.equal(bufferedPercent, 27);
+});
+
+// Native percentage tests (Claude Code v2.1.6+)
+test('getContextPercent prefers native used_percentage when available', () => {
+  const percent = getContextPercent({
+    context_window: {
+      context_window_size: 200000,
+      current_usage: { input_tokens: 55000 }, // would be 28% raw
+      used_percentage: 47, // native value takes precedence
+    },
+  });
+  assert.equal(percent, 47);
+});
+
+test('getBufferedPercent prefers native used_percentage when available', () => {
+  const percent = getBufferedPercent({
+    context_window: {
+      context_window_size: 200000,
+      current_usage: { input_tokens: 55000 }, // would be 50% buffered
+      used_percentage: 47, // native value takes precedence
+    },
+  });
+  assert.equal(percent, 47);
+});
+
+test('getContextPercent falls back when native is null', () => {
+  const percent = getContextPercent({
+    context_window: {
+      context_window_size: 200000,
+      current_usage: { input_tokens: 55000 },
+      used_percentage: null,
+    },
+  });
+  assert.equal(percent, 28); // raw calculation
+});
+
+test('getBufferedPercent falls back when native is null', () => {
+  const percent = getBufferedPercent({
+    context_window: {
+      context_window_size: 200000,
+      current_usage: { input_tokens: 55000 },
+      used_percentage: null,
+    },
+  });
+  assert.equal(percent, 50); // buffered calculation
+});
+
+test('native percentage handles zero correctly', () => {
+  assert.equal(getContextPercent({ context_window: { used_percentage: 0 } }), 0);
+  assert.equal(getBufferedPercent({ context_window: { used_percentage: 0 } }), 0);
+});
+
+test('native percentage clamps negative values to 0', () => {
+  assert.equal(getContextPercent({ context_window: { used_percentage: -5 } }), 0);
+  assert.equal(getBufferedPercent({ context_window: { used_percentage: -10 } }), 0);
+});
+
+test('native percentage clamps values over 100 to 100', () => {
+  assert.equal(getContextPercent({ context_window: { used_percentage: 150 } }), 100);
+  assert.equal(getBufferedPercent({ context_window: { used_percentage: 200 } }), 100);
+});
+
+test('native percentage falls back when NaN', () => {
+  const percent = getContextPercent({
+    context_window: {
+      context_window_size: 200000,
+      current_usage: { input_tokens: 55000 },
+      used_percentage: NaN,
+    },
+  });
+  assert.equal(percent, 28); // falls back to raw calculation
 });
 
 test('getModelName prefers display name, then id, then fallback', () => {
   assert.equal(getModelName({ model: { display_name: 'Opus', id: 'opus-123' } }), 'Opus');
   assert.equal(getModelName({ model: { id: 'sonnet-456' } }), 'sonnet-456');
   assert.equal(getModelName({}), 'Unknown');
+});
+
+test('bedrock model detection recognizes bedrock ids', () => {
+  assert.ok(isBedrockModelId('anthropic.claude-3-5-sonnet-20240620-v1:0'));
+  assert.ok(isBedrockModelId('eu.anthropic.claude-opus-4-5-20251101-v1:0'));
+  assert.equal(isBedrockModelId('claude-3-5-sonnet-20241022'), false);
+  assert.equal(getProviderLabel({ model: { id: 'anthropic.claude-3-5-sonnet-20240620-v1:0' } }), 'Bedrock');
+  assert.equal(getProviderLabel({ model: { id: 'claude-3-5-sonnet-20241022' } }), null);
 });
 
 test('parseTranscript aggregates tools, agents, and todos', async () => {
@@ -113,8 +177,12 @@ test('parseTranscript aggregates tools, agents, and todos', async () => {
   assert.equal(result.tools[0].target, '/tmp/example.txt');
   assert.equal(result.agents.length, 1);
   assert.equal(result.agents[0].status, 'completed');
-  assert.equal(result.todos.length, 2);
+  assert.equal(result.todos.length, 4);
+  assert.equal(result.todos[0].status, 'completed');
   assert.equal(result.todos[1].status, 'in_progress');
+  assert.equal(result.todos[2].content, 'Third task');
+  assert.equal(result.todos[2].status, 'completed');
+  assert.equal(result.todos[3].status, 'in_progress');
   assert.equal(result.sessionStart?.toISOString(), '2024-01-01T00:00:00.000Z');
 });
 
@@ -507,7 +575,7 @@ test('countConfigs uses case-sensitive matching for disabled servers', async () 
 
 // Regression test for GitHub Issue #3:
 // "MCP count showing 5 when user has 6, still showing 5 when all disabled"
-// https://github.com/jarrodwatts/claude-hud/issues/3
+// https://github.com/Alert0723/cong.claude-marketplace/issues/3
 test('Issue #3: MCP count updates correctly when servers are disabled', async () => {
   const homeDir = await mkdtemp(path.join(tmpdir(), 'claude-hud-home-'));
   const originalHome = process.env.HOME;

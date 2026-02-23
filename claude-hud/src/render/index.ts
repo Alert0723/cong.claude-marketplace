@@ -3,31 +3,31 @@ import { renderSessionLine } from './session-line.js';
 import { renderToolsLine } from './tools-line.js';
 import { renderAgentsLine } from './agents-line.js';
 import { renderTodosLine } from './todos-line.js';
-import { renderLastMessageLine } from './last-message-line.js';
-import { dim, RESET, setTheme } from './colors.js';
+import {
+  renderIdentityLine,
+  renderProjectLine,
+  renderEnvironmentLine,
+  renderUsageLine,
+  renderTokenDetailsLine,
+} from './lines/index.js';
+import { dim, RESET } from './colors.js';
 
-// Strip ANSI codes to get visual length
-function visualLength(str: string): number {
+function stripAnsi(str: string): string {
   // eslint-disable-next-line no-control-regex
-  return str.replace(/\x1b\[[0-9;]*m/g, '').length;
+  return str.replace(/\x1b\[[0-9;]*m/g, '');
+}
+
+function visualLength(str: string): number {
+  return stripAnsi(str).length;
 }
 
 function makeSeparator(length: number): string {
   return dim('─'.repeat(Math.max(length, 20)));
 }
 
-export function render(ctx: RenderContext): void {
-  // Set the color theme from config
-  if (ctx.config?.colorTheme) {
-    setTheme(ctx.config.colorTheme);
-  }
-
-  const layout = ctx.config?.layout ?? 'default';
-  const lines: string[] = [];
-  const display = ctx.config?.display;
-
-  // Collect activity lines (tools, agents, todos)
+function collectActivityLines(ctx: RenderContext): string[] {
   const activityLines: string[] = [];
+  const display = ctx.config?.display;
 
   if (display?.showTools !== false) {
     const toolsLine = renderToolsLine(ctx);
@@ -50,30 +50,83 @@ export function render(ctx: RenderContext): void {
     }
   }
 
-  // Add last user message line (only if explicitly enabled)
-  if (display?.showLastMessage === true) {
-    const lastMessageLine = renderLastMessageLine(ctx);
-    if (lastMessageLine) {
-      activityLines.push(lastMessageLine);
-    }
-  }
+  return activityLines;
+}
 
-  // Both layouts use the same session line (model + project + counts + etc)
+function renderCompact(ctx: RenderContext): string[] {
+  const lines: string[] = [];
+
   const sessionLine = renderSessionLine(ctx);
   if (sessionLine) {
     lines.push(sessionLine);
   }
 
-  // Add separator below header for separators layout (only when activity exists)
-  if (layout === 'separators' && activityLines.length > 0) {
-    const separatorWidth = visualLength(sessionLine ?? '') + 5;
-    lines.push(makeSeparator(separatorWidth));
+  return lines;
+}
+
+function renderExpanded(ctx: RenderContext): string[] {
+  const lines: string[] = [];
+
+  const projectLine = renderProjectLine(ctx);
+  if (projectLine) {
+    lines.push(projectLine);
+  }
+
+  const identityLine = renderIdentityLine(ctx);
+  const usageLine = renderUsageLine(ctx);
+  if (identityLine && usageLine) {
+    lines.push(`${identityLine} \u2502 ${usageLine}`);
+  } else if (identityLine) {
+    lines.push(identityLine);
+  }
+
+  const tokenDetailsLine = renderTokenDetailsLine(ctx);
+  if (tokenDetailsLine) {
+    lines.push(tokenDetailsLine);
+  }
+
+  const environmentLine = renderEnvironmentLine(ctx);
+  if (environmentLine) {
+    lines.push(environmentLine);
+  }
+
+  return lines;
+}
+
+export function render(ctx: RenderContext): void {
+  const lineLayout = ctx.config?.lineLayout ?? 'expanded';
+  const showSeparators = ctx.config?.showSeparators ?? false;
+
+  const headerLines = lineLayout === 'expanded'
+    ? renderExpanded(ctx)
+    : renderCompact(ctx);
+
+  const activityLines = collectActivityLines(ctx);
+
+  const lines: string[] = [...headerLines];
+
+  if (showSeparators && activityLines.length > 0) {
+    const maxWidth = Math.max(...headerLines.map(visualLength), 20);
+    lines.push(makeSeparator(maxWidth));
   }
 
   lines.push(...activityLines);
 
+  // 调试输出
+  if (process.env.DEBUG?.includes('claude-hud')) {
+    console.error('[claude-hud:render] lines:', JSON.stringify(lines));
+    console.error('[claude-hud:render] headerLines:', JSON.stringify(headerLines));
+    console.error('[claude-hud:render] activityLines:', JSON.stringify(activityLines));
+  }
+
   for (const line of lines) {
-    const outputLine = `${RESET}${line.replace(/ /g, '\u00A0')}`;
+    // Skip lines that are effectively empty or single characters
+    if (visualLength(line) < 2) {
+      continue;
+    }
+    // Use normal space on Windows to avoid display issues
+    const spaceChar = process.platform === 'win32' ? ' ' : '\u00A0';
+    const outputLine = `${RESET}${line.replace(/ /g, spaceChar)}`;
     console.log(outputLine);
   }
 }

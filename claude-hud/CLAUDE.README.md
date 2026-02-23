@@ -8,17 +8,17 @@ Real-time statusline showing context usage, active tools, running agents, and to
 
 **Step 1: Add the marketplace**
 ```
-/plugin marketplace add alwinpaul1/claude-hud-enhanced
+/plugin marketplace add Alert0723/cong.claude-marketplace
 ```
 
 **Step 2: Install the plugin**
 ```
-/plugin install claude-hud-enhanced
+/plugin install claude-hud
 ```
 
 **Step 3: Configure the statusline**
 ```
-/claude-hud-enhanced:setup
+/claude-hud:setup
 ```
 
 Done. The HUD appears immediately — no restart needed.
@@ -44,21 +44,21 @@ If not installed or outdated, direct user to https://claude.ai/code
 
 Run this command in Claude Code:
 ```
-/plugin marketplace add alwinpaul1/claude-hud-enhanced
+/plugin marketplace add Alert0723/cong.claude-marketplace
 ```
 
 ### Step 3: Install the Plugin
 
 Run this command in Claude Code:
 ```
-/plugin install claude-hud-enhanced
+/plugin install claude-hud
 ```
 
 ### Step 4: Configure the Statusline
 
 Run this command in Claude Code:
 ```
-/claude-hud-enhanced:setup
+/claude-hud:setup
 ```
 
 This adds the statusLine configuration to the user's settings.json.
@@ -70,16 +70,6 @@ Tell the user:
 - The statusline appears immediately — no restart needed
 - It shows: context usage, active tools, running agents, and todo progress
 
-### Step 6: Ask About Starring (Optional)
-
-Ask the user: "Would you like to star the repository to support the project?"
-
-Only if they explicitly agree, run:
-```bash
-gh repo star alwinpaul1/claude-hud-enhanced
-```
-
-Never run this automatically without user consent.
 
 </agent_workflow>
 
@@ -92,7 +82,7 @@ Technical documentation for agents who need to understand, modify, or debug Clau
 <plugin>
   <name>Claude HUD</name>
   <description>Real-time statusline showing context usage, active tools, running agents, and todo progress. Always visible below your input, zero config required.</description>
-  <repository>github.com/alwinpaul1/claude-hud-enhanced</repository>
+  <repository>github.com/Alert0723/cong.claude-marketplace</repository>
   <license>MIT</license>
 </plugin>
 
@@ -236,20 +226,20 @@ Technical documentation for agents who need to understand, modify, or debug Clau
       "name": "claude-hud",
       "description": "Real-time statusline HUD for Claude Code",
       "version": "0.0.1",
-      "author": { "name": "Jarrod Watts", "url": "https://github.com/jarrodwatts" }
+      "author": { "name": "conghuang", "url": "https://github.com/conghuang" }
     }
   </manifest_content>
   <note>The plugin.json contains metadata only. statusLine is NOT a valid plugin.json field.</note>
 
   <statusline_config>
-    The /claude-hud-enhanced:setup command adds statusLine to ~/.claude/settings.json with an auto-updating command that finds the latest installed version.
+    The /claude-hud:setup command adds statusLine to ~/.claude/settings.json with an auto-updating command that finds the latest installed version.
     Updates are automatic - no need to re-run setup after updating the plugin.
   </statusline_config>
 </plugin_configuration>
 
 <development>
   <setup>
-    git clone https://github.com/alwinpaul1/claude-hud-enhanced
+    git clone https://github.com/Alert0723/cong.claude-marketplace
     cd claude-hud
     npm ci
     npm run build
@@ -294,9 +284,9 @@ Technical documentation for agents who need to understand, modify, or debug Clau
 <troubleshooting>
   <issue name="Statusline not appearing">
     <cause>Plugin not installed or statusLine not configured</cause>
-    <solution>Run: /plugin marketplace add alwinpaul1/claude-hud-enhanced</solution>
-    <solution>Run: /plugin install claude-hud-enhanced</solution>
-    <solution>Run: /claude-hud-enhanced:setup</solution>
+    <solution>Run: /plugin marketplace add Alert0723/cong.claude-marketplace</solution>
+    <solution>Run: /plugin install claude-hud</solution>
+    <solution>Run: /claude-hud:setup</solution>
     <solution>Ensure Claude Code is v1.0.80 or later</solution>
   </issue>
 

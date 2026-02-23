@@ -1,9 +1,9 @@
-# Claude HUD Enhanced
+# Claude HUD
 
-An enhanced Claude Code plugin that shows what's happening — context usage, active tools, running agents, todo progress, **and detailed usage limits with time-to-reset countdowns**. Always visible below your input.
+A Claude Code plugin that shows what's happening — context usage, active tools, running agents, and todo progress. Always visible below your input.
 
-[![License](https://img.shields.io/github/license/alwinpaul1/claude-hud-enhanced?v=2)](LICENSE)
-[![Stars](https://img.shields.io/github/stars/alwinpaul1/claude-hud-enhanced)](https://github.com/alwinpaul1/claude-hud-enhanced/stargazers)
+[![License](https://img.shields.io/github/license/Alert0723/cong.claude-marketplace?v=2)](LICENSE)
+[![Stars](https://img.shields.io/github/stars/Alert0723/cong.claude-marketplace)](https://github.com/Alert0723/cong.claude-marketplace/stargazers)
 
 ![Claude HUD in action](claude-hud-preview-5-2.png)
 
@@ -11,28 +11,46 @@ An enhanced Claude Code plugin that shows what's happening — context usage, ac
 
 Inside a Claude Code instance, run the following commands:
 
-**Step 1: Add the enhanced marketplace**
+**Step 1: Add the marketplace**
 ```
-/plugin marketplace add alwinpaul1/claude-hud-enhanced
+/plugin marketplace add Alert0723/cong.claude-marketplace
 ```
 
 **Step 2: Install the plugin**
+
+<details>
+<summary><strong>⚠️ Linux users: Click here first</strong></summary>
+
+On Linux, `/tmp` is often a separate filesystem (tmpfs), which causes plugin installation to fail with:
 ```
-/plugin install claude-hud-enhanced
+EXDEV: cross-device link not permitted
+```
+
+**Fix**: Set TMPDIR before installing:
+```bash
+mkdir -p ~/.cache/tmp && TMPDIR=~/.cache/tmp claude
+```
+
+Then run the install command below in that session. This is a [Claude Code platform limitation](https://github.com/anthropics/claude-code/issues/14799).
+
+</details>
+
+```
+/plugin install claude-hud
 ```
 
 **Step 3: Configure the statusline**
 ```
-/claude-hud-enhanced:setup
+/claude-hud:setup
 ```
 
 Done! The HUD appears immediately — no restart needed.
 
 ---
 
-## What is Claude HUD Enhanced?
+## What is Claude HUD?
 
-Claude HUD Enhanced gives you better insights into what's happening in your Claude Code session, with **additional features** for tracking usage limits.
+Claude HUD gives you better insights into what's happening in your Claude Code session.
 
 | What You See | Why It Matters |
 |--------------|----------------|
@@ -41,65 +59,23 @@ Claude HUD Enhanced gives you better insights into what's happening in your Clau
 | **Tool activity** | Watch Claude read, edit, and search files as it happens |
 | **Agent tracking** | See which subagents are running and what they're doing |
 | **Todo progress** | Track task completion in real-time |
-| **5h & 7d usage** | Always see both rate limits with reset times |
-| **Model quotas** | Track Opus 4.5 and other compute-intensive model limits |
-| **Max tier info** | See Max5/Max20 tier with tokens-per-window |
 
-### Enhanced Features (vs Original)
+## What You See
 
-| Feature | Original | Enhanced |
-|---------|----------|----------|
-| 7-day usage | Only shown when ≥80% | **Always visible** |
-| 5h limit reached | Basic countdown | **Reset time** (e.g., "Resets 8:32 PM") |
-| 7d reset | Not shown | **Date/time** (e.g., "Resets Fri 12:30 PM") |
-| Credential source | File only | **File + macOS Keychain** |
-| Model quotas | ❌ | ✅ Shows Opus 4.5 limits |
-| Max tier detection | ❌ | ✅ Max5/Max20 with tokens/window |
+### Default (2 lines)
+```
+[Opus | Max] │ my-project git:(main*)
+Context █████░░░░░ 45% │ Usage ██░░░░░░░░ 25% (1h 30m / 5h)
+```
+- **Line 1** — Model, plan name (or `Bedrock`), project path, git branch
+- **Line 2** — Context bar (green → yellow → red) and usage rate limits
 
-## What Each Line Shows
-
-### Session Info
+### Optional lines (enable via `/claude-hud:configure`)
 ```
-[Opus 4.5 | Pro] █████░░░░░ 45% 90k/200k | my-project git:(main) | 5h: 25% (3h 28m) | 7d: 51% (Resets Fri 12:30 PM) | ⏱️ 5m
+◐ Edit: auth.ts | ✓ Read ×3 | ✓ Grep ×2        ← Tools activity
+◐ explore [haiku]: Finding auth code (2m 15s)    ← Agent status
+▸ Fix authentication bug (2/5)                   ← Todo progress
 ```
-- **Model** — Current model in use (shown first)
-- **Plan name** — Your subscription tier (Pro, Max, Team) when usage enabled
-- **Context bar** — Visual meter with color coding (green → yellow → red as it fills)
-- **Token count** — Current/total tokens (e.g., `90k/200k`)
-- **Project path** — Configurable 1-3 directory levels (default: 1)
-- **Git branch** — Current branch name (configurable on/off)
-- **5h usage** — 5-hour rate limit with **countdown** (e.g., "3h 28m"), or reset time when limit reached
-- **7d usage** — 7-day rate limit with **reset date/time** (e.g., "Resets Fri 12:30 PM")
-- **Duration** — How long the session has been running
-
-### When Limit is Reached
-```
-[Opus 4.5 | Pro] ░░░░░░░░░░ 0% 0/200k | my-project git:(main) | ⚠ 5h limit Resets 8:32 PM | 7d: 51% (Resets Fri 12:30 PM) | ⏱️ 1h 48m
-```
-- Shows warning with reset time for 5h limit
-- 7-day usage with reset date/time always visible alongside
-
-### Tool Activity
-```
-✓ TaskOutput ×2 | ✓ mcp_context7 ×1 | ✓ Glob ×1 | ✓ Skill ×1
-```
-- **Running tools** show a spinner with the target file
-- **Completed tools** aggregate by type with counts
-
-### Agent Status
-```
-✓ Explore: Explore home directory structure (5s)
-✓ open-source-librarian: Research React hooks patterns (2s)
-```
-- **Agent type** and what it's working on
-- **Elapsed time** for each agent
-
-### Todo Progress
-```
-✓ All todos complete (5/5)
-```
-- **Current task** or completion status
-- **Progress counter** (completed/total)
 
 ---
 
@@ -124,7 +100,7 @@ Claude Code → stdin JSON → claude-hud → stdout → displayed in your termi
 Customize your HUD anytime:
 
 ```
-/claude-hud-enhanced:configure
+/claude-hud:configure
 ```
 
 The guided flow walks you through customization — no manual editing needed:
@@ -145,133 +121,108 @@ After choosing a preset, you can turn individual elements on or off.
 
 ### Manual Configuration
 
-You can also edit the config file directly at `~/.claude/plugins/claude-hud-enhanced/config.json`.
+You can also edit the config file directly at `~/.claude/plugins/claude-hud/config.json`.
+
+See [config.example.json](config.example.json) for a sample configuration that enables all optional features.
 
 ### Options
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `layout` | string | `default` | Layout style: `default` or `separators` |
+| `lineLayout` | string | `expanded` | Layout: `expanded` (multi-line) or `compact` (single line) |
 | `pathLevels` | 1-3 | 1 | Directory levels to show in project path |
 | `gitStatus.enabled` | boolean | true | Show git branch in HUD |
 | `gitStatus.showDirty` | boolean | true | Show `*` for uncommitted changes |
 | `gitStatus.showAheadBehind` | boolean | false | Show `↑N ↓N` for ahead/behind remote |
+| `gitStatus.showFileStats` | boolean | false | Show file change counts `!M +A ✘D ?U` |
 | `display.showModel` | boolean | true | Show model name `[Opus]` |
 | `display.showContextBar` | boolean | true | Show visual context bar `████░░░░░░` |
-| `display.showConfigCounts` | boolean | true | Show CLAUDE.md, rules, MCPs, hooks counts |
-| `display.showDuration` | boolean | true | Show session duration `⏱️ 5m` |
+| `display.contextValue` | `percent` \| `tokens` | `percent` | Context display format (`45%` or `45k/200k`) |
+| `display.showConfigCounts` | boolean | false | Show CLAUDE.md, rules, MCPs, hooks counts |
+| `display.showDuration` | boolean | false | Show session duration `⏱️ 5m` |
+| `display.showSpeed` | boolean | false | Show output token speed `out: 42.1 tok/s` |
 | `display.showUsage` | boolean | true | Show usage limits (Pro/Max/Team only) |
+| `display.usageBarEnabled` | boolean | true | Display usage as visual bar instead of text |
+| `display.sevenDayThreshold` | 0-100 | 80 | Show 7-day usage when >= threshold (0 = always) |
 | `display.showTokenBreakdown` | boolean | true | Show token details at high context (85%+) |
-| `display.showTools` | boolean | true | Show tools activity line |
-| `display.showAgents` | boolean | true | Show agents activity line |
-| `display.showTodos` | boolean | true | Show todos progress line |
+| `display.showTools` | boolean | false | Show tools activity line |
+| `display.showAgents` | boolean | false | Show agents activity line |
+| `display.showTodos` | boolean | false | Show todos progress line |
 
 ### Usage Limits (Pro/Max/Team)
 
-Usage display is **enabled by default** for Claude Pro, Max, and Team subscribers. It shows your rate limit consumption directly in the HUD.
+Usage display is **enabled by default** for Claude Pro, Max, and Team subscribers. It shows your rate limit consumption on line 2 alongside the context bar.
 
-**Enhanced behavior:** Both 5-hour AND 7-day usage are **always visible**:
-- **5h** — Shows countdown (e.g., "3h 28m") or reset time when limit reached
-- **7d** — Shows date/time (e.g., "Resets Fri 12:30 PM")
+The 7-day percentage appears when above the `display.sevenDayThreshold` (default 80%):
 
 ```
-[Opus 4.5 | Pro] █████░░░░░ 45% 90k/200k | my-project | 5h: 25% (3h 28m) | 7d: 51% (Resets Fri 12:30 PM) | ⏱️ 5m
+Context █████░░░░░ 45% │ Usage ██░░░░░░░░ 25% (1h 30m / 5h) | ██████████ 85% (2d / 7d)
 ```
 
-**When limit is reached:**
-```
-[Opus 4.5 | Pro] ░░░░░░░░░░ 0% | my-project | ⚠ 5h limit Resets 8:32 PM | 7d: 51% (Resets Fri 12:30 PM)
-```
-
-**Max tier detection** (Max5 = 88k tokens/window, Max20 = 220k tokens/window):
-```
-[Opus 4.5 | Max] █████░░░░░ 45% | my-project | 5h: 25% | 7d: 51% (Resets Fri 12:30 PM) | Max20 220k/win
-```
-
-To disable usage display, set `display.showUsage` to `false` in your config.
+To disable, set `display.showUsage` to `false`.
 
 **Requirements:**
 - Claude Pro, Max, or Team subscription (not available for API users)
 - OAuth credentials from Claude Code (created automatically when you log in)
 
-**Credential Sources (Enhanced):**
-- `~/.claude/.credentials.json` (file-based)
-- **macOS Keychain** (automatic fallback) — reads from "Claude Code-credentials"
-
 **Troubleshooting:** If usage doesn't appear:
 - Ensure you're logged in with a Pro/Max/Team account (not API key)
 - Check `display.showUsage` is not set to `false` in config
-- On macOS, credentials may be in Keychain (this is supported automatically)
 - API users see no usage display (they have pay-per-token, not rate limits)
-
-### Layout Options
-
-**Default layout** — All info on first line:
-```
-[Opus] ████░░░░░░ 42% | my-project git:(main) | 2 rules | ⏱️ 5m
-✓ Read ×3 | ✓ Edit ×1
-```
-
-**Separators layout** — Visual separator below header when activity exists:
-```
-[Opus] ████░░░░░░ 42% | my-project git:(main) | 2 rules | ⏱️ 5m
-──────────────────────────────────────────────────────────────
-✓ Read ×3 | ✓ Edit ×1
-```
+- AWS Bedrock models display `Bedrock` and hide usage limits (usage is managed in AWS)
 
 ### Example Configuration
 
 ```json
 {
-  "layout": "default",
+  "lineLayout": "expanded",
   "pathLevels": 2,
   "gitStatus": {
     "enabled": true,
     "showDirty": true,
-    "showAheadBehind": true
+    "showAheadBehind": true,
+    "showFileStats": true
   },
   "display": {
-    "showModel": true,
-    "showContextBar": true,
-    "showConfigCounts": true,
-    "showDuration": true,
-    "showUsage": true,
-    "showTokenBreakdown": true,
     "showTools": true,
     "showAgents": true,
-    "showTodos": true
+    "showTodos": true,
+    "showConfigCounts": true,
+    "showDuration": true
   }
 }
 ```
 
 ### Display Examples
 
-**1 level (default):** `[Opus] 45% | my-project git:(main) | ...`
+**1 level (default):** `[Opus] │ my-project git:(main)`
 
-**2 levels:** `[Opus] 45% | apps/my-project git:(main) | ...`
+**2 levels:** `[Opus] │ apps/my-project git:(main)`
 
-**3 levels:** `[Opus] 45% | dev/apps/my-project git:(main) | ...`
+**3 levels:** `[Opus] │ dev/apps/my-project git:(main)`
 
-**With dirty indicator:** `[Opus] 45% | my-project git:(main*) | ...`
+**With dirty indicator:** `[Opus] │ my-project git:(main*)`
 
-**With ahead/behind:** `[Opus] 45% | my-project git:(main ↑2 ↓1) | ...`
+**With ahead/behind:** `[Opus] │ my-project git:(main ↑2 ↓1)`
 
-**Minimal display (only context %):** Configure `showModel`, `showContextBar`, `showConfigCounts`, `showDuration` to `false`
+**With file stats:** `[Opus] │ my-project git:(main* !3 +1 ?2)`
+- `!` = modified files, `+` = added/staged, `✘` = deleted, `?` = untracked
+- Counts of 0 are omitted for cleaner display
 
 ### Troubleshooting
 
 **Config not applying?**
 - Check for JSON syntax errors: invalid JSON silently falls back to defaults
-- Ensure valid values: `pathLevels` must be 1, 2, or 3; `layout` must be `default` or `separators`
-- Delete config and run `/claude-hud-enhanced:configure` to regenerate
+- Ensure valid values: `pathLevels` must be 1, 2, or 3; `lineLayout` must be `expanded` or `compact`
+- Delete config and run `/claude-hud:configure` to regenerate
 
 **Git status missing?**
 - Verify you're in a git repository
 - Check `gitStatus.enabled` is not `false` in config
 
 **Tool/agent/todo lines missing?**
-- These only appear when there's activity to show
-- Check `display.showTools`, `display.showAgents`, `display.showTodos` in config
+- These are hidden by default — enable with `showTools`, `showAgents`, `showTodos` in config
+- They also only appear when there's activity to show
 
 ---
 
@@ -285,26 +236,13 @@ To disable usage display, set `display.showUsage` to `false` in your config.
 ## Development
 
 ```bash
-git clone https://github.com/alwinpaul1/claude-hud-enhanced
-cd claude-hud-enhanced
+git clone https://github.com/Alert0723/cong.claude-marketplace
+cd claude-hud
 npm ci && npm run build
 npm test
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
----
-
-## Credits
-
-This is an enhanced fork of [jarrodwatts/claude-hud](https://github.com/jarrodwatts/claude-hud). 
-
-**Enhancements by [@alwinpaul1](https://github.com/alwinpaul1):**
-- macOS Keychain credential support
-- Always-visible 7-day usage limits
-- Live time-to-reset countdowns
-- Model quota tracking (Opus 4.5, etc.)
-- Max5/Max20 tier detection
 
 ---
 
@@ -316,4 +254,4 @@ MIT — see [LICENSE](LICENSE)
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=alwinpaul1/claude-hud-enhanced&type=Date)](https://star-history.com/#alwinpaul1/claude-hud-enhanced&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=Alert0723/cong.claude-marketplace&type=Date)](https://star-history.com/#Alert0723/cong.claude-marketplace&Date)
