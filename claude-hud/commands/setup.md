@@ -135,39 +135,24 @@ This is a [Claude Code platform limitation](https://github.com/anthropics/claude
 
 **Windows** (Platform: `win32`):
 
-**Method A: Using PowerShell script (recommended for reliability)**
+**Method A: Using bundled PowerShell script (recommended)**
 
-1. Get plugin path:
-   ```powershell
-   (Get-ChildItem "$env:USERPROFILE\.claude\plugins\cache\claude-hud\claude-hud" | Sort-Object LastWriteTime -Descending | Select-Object -First 1).FullName
-   ```
-   If empty or errors, the plugin is not installed. Tell user to install via marketplace first.
+The plugin includes a `setup.ps1` script in its `commands/` folder that automatically:
+1. Finds the latest installed version of claude-hud
+2. Detects the runtime (bun or node)
+3. Runs the correct entry point
 
-2. Get runtime absolute path (prefer bun, fallback to node):
-   ```powershell
-   if (Get-Command bun -ErrorAction SilentlyContinue) { (Get-Command bun).Source } elseif (Get-Command node -ErrorAction SilentlyContinue) { (Get-Command node).Source } else { Write-Error "Neither bun nor node found" }
-   ```
+Configuration in `settings.json`:
+```json
+{
+  "statusLine": {
+    "type": "command",
+    "command": "powershell -NoProfile -NoLogo -ExecutionPolicy Bypass -File \"C:\\Users\\conghuang\\.claude\\plugins\\cache\\cong-claude-marketplace\\claude-hud\\{VERSION}\\commands\\setup.ps1\""
+  }
+}
+```
 
-   If neither found, stop and tell user to install Node.js or Bun.
-
-3. Check if runtime is bun (by filename). If bun, use `src\index.ts`. Otherwise use `dist\index.js`.
-
-4. Create a PowerShell launcher script:
-   ```powershell
-   $launcherPath = "$env:USERPROFILE\.claude\claude-hud.ps1"
-   $launcherContent = @"
-$p=(Get-ChildItem '$env:USERPROFILE\.claude\plugins\cache\claude-hud\claude-hud' | Sort-Object LastWriteTime -Descending | Select-Object -First 1).FullName
-& '{RUNTIME_PATH}' (Join-Path $p '{SOURCE}')
-"@
-   Set-Content -Path $launcherPath -Value $launcherContent -Encoding UTF8
-   ```
-
-5. Generate command:
-   ```
-   powershell -NoProfile -NonInteractive -Command "& '$env:USERPROFILE\.claude\claude-hud.ps1'"
-   ```
-
-**Method B: Using direct command (simpler, but requires node in PATH)**
+**Method B: Using PowerShell script with dynamic lookup**
 
 1. Check if `node` is available:
    ```powershell
@@ -181,6 +166,27 @@ $p=(Get-ChildItem '$env:USERPROFILE\.claude\plugins\cache\claude-hud\claude-hud'
    node C:\Users\conghuang\.claude\plugins\cache\claude-hud\claude-hud\{VERSION}\dist\index.js
    ```
    Replace `{VERSION}` with the detected version number.
+
+**Method C: Using bundled setup.ps1 (automatic, recommended)**
+
+1. Get plugin path:
+   ```powershell
+   (Get-ChildItem "$env:USERPROFILE\.claude\plugins\cache\cong-claude-marketplace\claude-hud" | Sort-Object LastWriteTime -Descending | Select-Object -First 1).FullName
+   ```
+
+2. Get runtime path:
+   ```powershell
+   if (Get-Command bun -ErrorAction SilentlyContinue) { (Get-Command bun).Source } elseif (Get-Command node -ErrorAction SilentlyContinue) { (Get-Command node).Source } else { Write-Error "Neither bun nor node found" }
+   ```
+
+3. Determine source file based on runtime:
+   - If runtime name starts with "bun" → use `src\index.ts`
+   - Otherwise → use `dist\index.js`
+
+4. Generate command:
+   ```
+   powershell -NoProfile -NoLogo -ExecutionPolicy Bypass -File "{PLUGIN_PATH}\commands\setup.ps1"
+   ```
 
 **WSL (Windows Subsystem for Linux)**: If running in WSL, use the macOS/Linux instructions. Ensure the plugin is installed in the Linux environment (`~/.claude/plugins/...`), not the Windows side.
 
@@ -212,22 +218,12 @@ If a write fails with `File has been unexpectedly modified`, re-read the file an
 }
 ```
 
-**Windows examples using launcher script**:
+**Windows examples using bundled setup.ps1 (recommended)**:
 ```json
 {
   "statusLine": {
     "type": "command",
-    "command": "powershell -NoProfile -NonInteractive -Command \"& '$env:USERPROFILE\\.claude\\claude-hud.ps1'\""
-  }
-}
-```
-
-**Windows examples using direct node**:
-```json
-{
-  "statusLine": {
-    "type": "command",
-    "command": "powershell -NoProfile -NonInteractive -Command \"node 'C:\\\\Users\\\\conghuang\\\\.claude\\\\plugins\\\\cache\\\\cong-claude-marketplace\\\\claude-hud\\\\0.0.9\\\\dist\\\\index.js'\""
+    "command": "powershell -NoProfile -NoLogo -ExecutionPolicy Bypass -File \"C:\\Users\\conghuang\\.claude\\plugins\\cache\\cong-claude-marketplace\\claude-hud\\0.0.9\\commands\\setup.ps1\""
   }
 }
 ```
