@@ -135,6 +135,8 @@ This is a [Claude Code platform limitation](https://github.com/anthropics/claude
 
 **Windows** (Platform: `win32`):
 
+**Method A: Using PowerShell script (recommended for reliability)**
+
 1. Get plugin path:
    ```powershell
    (Get-ChildItem "$env:USERPROFILE\.claude\plugins\cache\claude-hud\claude-hud" | Sort-Object LastWriteTime -Descending | Select-Object -First 1).FullName
@@ -150,10 +152,35 @@ This is a [Claude Code platform limitation](https://github.com/anthropics/claude
 
 3. Check if runtime is bun (by filename). If bun, use `src\index.ts`. Otherwise use `dist\index.js`.
 
-4. Generate command (note: quotes around runtime path handle spaces in paths):
+4. Create a PowerShell launcher script:
+   ```powershell
+   $launcherPath = "$env:USERPROFILE\.claude\claude-hud.ps1"
+   $launcherContent = @"
+$p=(Get-ChildItem '$env:USERPROFILE\.claude\plugins\cache\claude-hud\claude-hud' | Sort-Object LastWriteTime -Descending | Select-Object -First 1).FullName
+& '{RUNTIME_PATH}' (Join-Path $p '{SOURCE}')
+"@
+   Set-Content -Path $launcherPath -Value $launcherContent -Encoding UTF8
    ```
-   powershell -Command "& {$p=(Get-ChildItem $env:USERPROFILE\.claude\plugins\cache\claude-hud\claude-hud | Sort-Object LastWriteTime -Descending | Select-Object -First 1).FullName; & '{RUNTIME_PATH}' (Join-Path $p '{SOURCE}')}"
+
+5. Generate command:
    ```
+   powershell -NoProfile -NonInteractive -Command "& '$env:USERPROFILE\.claude\claude-hud.ps1'"
+   ```
+
+**Method B: Using direct command (simpler, but requires node in PATH)**
+
+1. Check if `node` is available:
+   ```powershell
+   Get-Command node -ErrorAction SilentlyContinue
+   ```
+
+2. Get plugin path (same as Method A step 1).
+
+3. Generate command using `node` (no need for absolute path):
+   ```
+   node C:\Users\conghuang\.claude\plugins\cache\claude-hud\claude-hud\{VERSION}\dist\index.js
+   ```
+   Replace `{VERSION}` with the detected version number.
 
 **WSL (Windows Subsystem for Linux)**: If running in WSL, use the macOS/Linux instructions. Ensure the plugin is installed in the Linux environment (`~/.claude/plugins/...`), not the Windows side.
 
@@ -174,11 +201,33 @@ Read the settings file and merge in the statusLine config, preserving all existi
 If the file doesn't exist, create it. If it contains invalid JSON, report the error and do not overwrite.
 If a write fails with `File has been unexpectedly modified`, re-read the file and retry the merge once.
 
+**Important for Windows**: When using Python's json module or similar tools to write the settings, ensure backslashes are properly escaped. The command string should contain single backslashes in JSON (e.g., `C:\\Users\\...`).
+
 ```json
 {
   "statusLine": {
     "type": "command",
     "command": "{GENERATED_COMMAND}"
+  }
+}
+```
+
+**Windows examples using launcher script**:
+```json
+{
+  "statusLine": {
+    "type": "command",
+    "command": "powershell -NoProfile -NonInteractive -Command \"& '$env:USERPROFILE\\.claude\\claude-hud.ps1'\""
+  }
+}
+```
+
+**Windows examples using direct node**:
+```json
+{
+  "statusLine": {
+    "type": "command",
+    "command": "powershell -NoProfile -NonInteractive -Command \"node 'C:\\\\Users\\\\conghuang\\\\.claude\\\\plugins\\\\cache\\\\cong-claude-marketplace\\\\claude-hud\\\\0.0.9\\\\dist\\\\index.js'\""
   }
 }
 ```
@@ -252,6 +301,20 @@ Use AskUserQuestion:
 
    **Windows: PowerShell execution policy error**:
    - Run: `Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned`
+
+   **Windows: JSON parsing error**:
+   - Backslashes in JSON must be properly escaped (double backslashes `\\` for single `\`)
+   - Use Python's json.dump() or similar tools to ensure correct escaping
+   - Test with: `python3 -m json.tool ~/.claude/settings.json`
+
+   **Windows: Command executes but no output**:
+   - Check if PowerShell is correctly executing the script
+   - Test manually: `powershell -NoProfile -NonInteractive -Command "& '$env:USERPROFILE\.claude\claude-hud.ps1'"`
+   - Ensure the launcher script exists: `Test-Path "$env:USERPROFILE\.claude\claude-hud.ps1"`
+
+   **Windows: Node.js not in PATH**:
+   - Use absolute path to node.exe instead of just `node`
+   - Example: `E:\nvm4w\nodejs\node.exe`
 
    **Permission denied**:
    - Runtime not executable: `chmod +x {RUNTIME_PATH}`
