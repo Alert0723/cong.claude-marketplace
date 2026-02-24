@@ -1,20 +1,15 @@
+const { test } = require('node:test');
+const assert = require('node:assert');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+const queue = require('./pending-queue.js');
 
-describe('PendingQueue', () => {
+test('should add item to queue', (t) => {
   const testDir = path.join(os.tmpdir(), 'pending-test-' + Date.now());
-  const queue = require('./pending-queue.js');
 
-  beforeEach(() => {
+  try {
     fs.mkdirSync(testDir, { recursive: true });
-  });
-
-  afterEach(() => {
-    fs.rmSync(testDir, { recursive: true, force: true });
-  });
-
-  test('should add item to queue', () => {
     const item = {
       id: 'item-1',
       summary: 'Pending item',
@@ -25,26 +20,42 @@ describe('PendingQueue', () => {
     queue.add(item, testDir);
 
     const all = queue.getAll(testDir);
-    expect(all).toHaveLength(1);
-    expect(all[0].id).toBe('item-1');
-  });
+    assert.strictEqual(all.length, 1);
+    assert.strictEqual(all[0].id, 'item-1');
+  } finally {
+    fs.rmSync(testDir, { recursive: true, force: true });
+  }
+});
 
-  test('should update item status', () => {
+test('should update item status', (t) => {
+  const testDir = path.join(os.tmpdir(), 'pending-test-' + Date.now());
+
+  try {
+    fs.mkdirSync(testDir, { recursive: true });
     const item = { id: 'item-1', summary: 'Test', importance: 0.5, status: 'pending' };
     queue.add(item, testDir);
 
     queue.updateStatus('item-1', 'classified', testDir);
 
     const updated = queue.getAll(testDir);
-    expect(updated[0].status).toBe('classified');
-  });
+    assert.strictEqual(updated[0].status, 'classified');
+  } finally {
+    fs.rmSync(testDir, { recursive: true, force: true });
+  }
+});
 
-  test('should filter items by status', () => {
+test('should filter items by status', (t) => {
+  const testDir = path.join(os.tmpdir(), 'pending-test-' + Date.now());
+
+  try {
+    fs.mkdirSync(testDir, { recursive: true });
     queue.add({ id: 'item-1', summary: 'A', importance: 0.5, status: 'pending' }, testDir);
     queue.add({ id: 'item-2', summary: 'B', importance: 0.7, status: 'classified' }, testDir);
 
     const pending = queue.getByStatus('pending', testDir);
-    expect(pending).toHaveLength(1);
-    expect(pending[0].id).toBe('item-1');
-  });
+    assert.strictEqual(pending.length, 1);
+    assert.strictEqual(pending[0].id, 'item-1');
+  } finally {
+    fs.rmSync(testDir, { recursive: true, force: true });
+  }
 });
