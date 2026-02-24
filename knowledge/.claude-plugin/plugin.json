@@ -1,0 +1,8 @@
+{
+  "name": "knowledge",
+  "description": "选择性知识索引系统 - 跨会话知识管理与按需检索",
+  "version": "0.1.0",
+  "author": {
+    "name": "conghuang"
+  }
+}
