@@ -59,3 +59,22 @@ test('should filter items by status', (t) => {
     fs.rmSync(testDir, { recursive: true, force: true });
   }
 });
+
+test('should not add duplicate items', (t) => {
+  const testDir = path.join(os.tmpdir(), 'pending-test-' + Date.now());
+
+  try {
+    fs.mkdirSync(testDir, { recursive: true });
+    const item = { id: 'item-1', summary: 'Test', importance: 0.5, status: 'pending' };
+
+    const firstResult = queue.add(item, testDir);
+    const secondResult = queue.add(item, testDir);
+
+    const all = queue.getAll(testDir);
+    assert.strictEqual(firstResult, true);
+    assert.strictEqual(secondResult, false);
+    assert.strictEqual(all.length, 1);
+  } finally {
+    fs.rmSync(testDir, { recursive: true, force: true });
+  }
+});

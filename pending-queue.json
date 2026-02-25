@@ -1,0 +1,82 @@
+[
+  {
+    "id": "analyzer.js-17760050",
+    "importance": 0.7,
+    "level": "project",
+    "summary": "修改 analyzer.js",
+    "filePath": "knowledge/scripts/analyzer.js",
+    "changeType": "modified",
+    "timestamp": "2026-02-25T17:14:15.654Z",
+    "addedAt": "2026-02-25T17:14:15.656Z"
+  },
+  {
+    "id": "session-start.js-a21e80ca",
+    "importance": 0.8,
+    "level": "project",
+    "summary": "修改 session-start.js",
+    "filePath": "knowledge/scripts/hooks/session-start.js",
+    "changeType": "modified",
+    "timestamp": "2026-02-25T17:14:15.657Z",
+    "addedAt": "2026-02-25T17:14:15.664Z"
+  },
+  {
+    "id": "pending-queue.js-22bed334",
+    "importance": 0.7,
+    "level": "project",
+    "summary": "修改 pending-queue.js",
+    "filePath": "knowledge/scripts/pending-queue.js",
+    "changeType": "modified",
+    "timestamp": "2026-02-25T17:14:15.664Z",
+    "addedAt": "2026-02-25T17:14:15.669Z"
+  },
+  {
+    "id": "pending-queue.test.js-cca32ee4",
+    "importance": 0.7,
+    "level": "project",
+    "summary": "修改 pending-queue.test.js",
+    "filePath": "knowledge/scripts/pending-queue.test.js",
+    "changeType": "modified",
+    "timestamp": "2026-02-25T17:14:15.670Z",
+    "addedAt": "2026-02-25T17:14:15.676Z"
+  },
+  {
+    "id": "analyzer.js-cbee1507",
+    "importance": 0.7,
+    "level": "project",
+    "summary": "修改 analyzer.js",
+    "filePath": "knowledge/scripts/analyzer.js",
+    "changeType": "modified",
+    "timestamp": "2026-02-25T17:15:06.491Z",
+    "addedAt": "2026-02-25T17:15:06.492Z"
+  },
+  {
+    "id": "session-start.js-1a4c6baf",
+    "importance": 0.8,
+    "level": "project",
+    "summary": "修改 session-start.js",
+    "filePath": "knowledge/scripts/hooks/session-start.js",
+    "changeType": "modified",
+    "timestamp": "2026-02-25T17:15:06.492Z",
+    "addedAt": "2026-02-25T17:15:06.501Z"
+  },
+  {
+    "id": "pending-queue.js-1606be25",
+    "importance": 0.7,
+    "level": "project",
+    "summary": "修改 pending-queue.js",
+    "filePath": "knowledge/scripts/pending-queue.js",
+    "changeType": "modified",
+    "timestamp": "2026-02-25T17:15:06.501Z",
+    "addedAt": "2026-02-25T17:15:06.509Z"
+  },
+  {
+    "id": "pending-queue.test.js-49970915",
+    "importance": 0.7,
+    "level": "project",
+    "summary": "修改 pending-queue.test.js",
+    "filePath": "knowledge/scripts/pending-queue.test.js",
+    "changeType": "modified",
+    "timestamp": "2026-02-25T17:15:06.509Z",
+    "addedAt": "2026-02-25T17:15:06.516Z"
+  }
+]

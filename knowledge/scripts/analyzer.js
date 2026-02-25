@@ -1,4 +1,5 @@
 const path = require('path');
+const crypto = require('crypto');
 
 const FILE_IMPORTANCE = {
   '.ts': 0.8,
@@ -31,6 +32,12 @@ const USER_LEVEL_PATHS = [
   'contributing'
 ];
 
+function generateId(filePath, timestamp) {
+  // Generate ID based on file path and timestamp for deduplication
+  const hash = crypto.createHash('md5').update(filePath + timestamp).digest('hex').substring(0, 8);
+  return `${path.basename(filePath)}-${hash}`;
+}
+
 function analyzeImportance(change) {
   const ext = path.extname(change.filePath);
   const dirName = path.dirname(change.filePath).toLowerCase();
@@ -62,13 +69,16 @@ function analyzeImportance(change) {
   };
   const summary = `${typeLabels[change.type]} ${fileName}`;
 
+  const timestamp = new Date().toISOString();
+
   return {
+    id: generateId(change.filePath, timestamp),
     importance: Number(importance.toFixed(2)),
     level,
     summary,
     filePath: change.filePath,
     changeType: change.type,
-    timestamp: new Date().toISOString()
+    timestamp
   };
 }
 

@@ -13,12 +13,20 @@ function add(item, dir) {
     queue = JSON.parse(fs.readFileSync(queuePath, 'utf-8'));
   }
 
+  // Check if item with same ID already exists
+  const exists = queue.some(q => q.id === item.id);
+  if (exists) {
+    console.log(`[Knowledge] Item ${item.id} already exists in queue, skipping.`);
+    return false;
+  }
+
   queue.push({
     ...item,
     addedAt: new Date().toISOString()
   });
 
   fs.writeFileSync(queuePath, JSON.stringify(queue, null, 2));
+  return true;
 }
 
 function getAll(dir) {
