@@ -33,6 +33,11 @@
       "name": "pdf2skills",
       "source": "./pdf2skills",
       "description": "将PDF文档转换为Claude技能 - 自动从PDF提取内容并生成技能目录结构"
+    },
+    {
+      "name": "knowledge",
+      "source": "./knowledge",
+      "description": "选择性知识索引系统 - 跨会话知识管理与按需检索"
     }
   ]
 }

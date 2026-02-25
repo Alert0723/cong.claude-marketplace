@@ -4,5 +4,9 @@
   "version": "0.1.0",
   "author": {
     "name": "conghuang"
-  }
+  },
+  "homepage": "https://github.com/Alert0723/cong.claude-marketplace",
+  "repository": "https://github.com/Alert0723/cong.claude-marketplace",
+  "license": "MIT",
+  "keywords": ["knowledge", "memory", "index", "storage", "retrieval", "claude-code"]
 }
