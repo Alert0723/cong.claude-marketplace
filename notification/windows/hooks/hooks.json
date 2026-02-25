@@ -1,6 +1,17 @@
 {
   "description": "Windows 桌面通知",
   "hooks": {
+    "Install": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PLUGIN_ROOT}/skills/notification-config/scripts/install-protocol-handler.ps1\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
     "PermissionRequest": [
       {
         "matcher": "*",

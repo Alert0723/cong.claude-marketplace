@@ -88,7 +88,7 @@ namespace ClaudeProtocolHandler
             {
                 // 查找 Claude Code 相关的终端进程
                 // 先尝试常见的终端应用
-                string[] terminalProcesses = new[] { "WindowsTerminal", "WindowsTerminal", "ConEmuC64", "ConEmuC" };
+                string[] terminalProcesses = new[] { "WindowsTerminal", "ConEmuC64", "ConEmuC" };
 
                 foreach (string processName in terminalProcesses)
                 {
@@ -114,12 +114,9 @@ namespace ClaudeProtocolHandler
                                     }
                                     else
                                     {
-                                        // 没有指定会话 ID，找任何 Claude 相关的窗口
-                                        if (mainWindowTitle.Contains("Claude") || mainWindowTitle.Contains("claude"))
-                                        {
-                                            ActivateWindow(proc);
-                                            return;
-                                        }
+                                        // 没有指定会话 ID，激活找到的第一个窗口
+                                        ActivateWindow(proc);
+                                        return;
                                     }
                                 }
                             }

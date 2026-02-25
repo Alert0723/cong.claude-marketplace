@@ -106,7 +106,9 @@ The notification plugin supports clicking notifications to bring the Claude term
 
 ### Installation
 
-Run the installation script once to set up the protocol handler:
+**The protocol handler is automatically installed when the plugin is installed.**
+
+If you need to manually reinstall or update the protocol handler, run:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File "${CLAUDE_PLUGIN_ROOT}/skills/notification-config/scripts/install-protocol-handler.ps1"
