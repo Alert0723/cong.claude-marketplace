@@ -1,0 +1,13 @@
+{
+  "name": "claudeception",
+  "version": "3.0.0",
+  "description": "持续学习系统 - 从工作会话中提取可复用知识并将其固化为新的 Claude Code 技能",
+  "author": {
+    "name": "blader",
+    "url": "https://github.com/blader"
+  },
+  "homepage": "https://github.com/blader/Claudeception",
+  "repository": "https://github.com/blader/Claudeception",
+  "license": "MIT",
+  "keywords": ["learning", "skills", "memory", "knowledge-extraction", "continuous-improvement"]
+}
