@@ -29,7 +29,6 @@
 | `notification-unix` | macOS/Linux | Unix 桌面通知（Shell） |
 | `claude-hud` | 全平台 | 实时状态行 HUD - 显示上下文用量、工具活动、Agent 状态等 |
 | `claude-mem` | 全平台 | 持久化内存系统 - 跨会话上下文压缩与记忆 |
-| `knowledge` | 全平台 | 选择性知识索引 - 跨会话知识管理与按需检索 |
 | `pdf2skills` | 全平台 | PDF 转 Claude 技能 - 自动提取内容并生成技能目录 |
 | `plugin-dev` | 全平台 | 插件开发工具包 - Hooks、MCP、Commands、Agents、Skills 开发指南 |
 
@@ -147,46 +146,6 @@ Claude Code 持久化内存系统，实现跨会话上下文压缩与记忆。
 
 ---
 
-## 📚 knowledge
-
-选择性知识索引系统，实现跨会话知识管理和按需检索。
-
-### 安装
-
-```bash
-/plugin install knowledge@cong.claude-marketplace
-```
-
-### 首次配置
-
-```bash
-/knowledge:setup
-```
-
-### 功能特性
-
-- **变更检测** - 自动检测代码变更
-- **重要度分析** - 分析变更的重要程度（仅用于排序，不作为过滤阈值）
-- **知识分类** - 区分用户级（跨项目）和项目级知识
-- **按需检索** - 只在需要时检索知识，不自动加载全部
-- **低 Token 消耗** - 极低消耗模式，按需触发
-
-### 使用命令
-
-| 命令 | 功能 |
-|------|------|
-| `/knowledge` | 查看待学习知识，进行分类 |
-| `/knowledge:setup` | 首次安装配置 |
-| `/knowledge:search <query>` | 搜索知识库 |
-| `/knowledge:pending` | 查看待定队列 |
-| `/knowledge:status` | 查看知识库统计 |
-
-### 知识存储
-
-- **用户级**: `~/.claude/knowledge/` - 跨项目通用知识
-- **项目级**: `.claude/knowledge/` - 项目特定知识
-
----
 
 ## 📄 pdf2skills
 
