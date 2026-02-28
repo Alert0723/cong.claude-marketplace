@@ -5,14 +5,9 @@
   },
   "plugins": [
     {
-      "name": "notification-windows",
-      "source": "./notification/windows",
-      "description": "Windows 桌面通知（PowerShell）"
-    },
-    {
-      "name": "notification-unix",
-      "source": "./notification/unix",
-      "description": "macOS/Linux 桌面通知（Shell）"
+      "name": "notification",
+      "source": "./notification",
+      "description": "桌面通知（Windows / macOS / Linux）"
     },
     {
       "name": "claude-mem",
