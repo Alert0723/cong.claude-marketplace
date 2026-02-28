@@ -130,14 +130,7 @@ if ($shouldNotify) {
             $Toast.Tag = "ClaudeCode"
             $Toast.Group = "ClaudeCode"
 
-            # 注册激活处理（需要使用自定义协议处理程序）
-            $activated = $false
-            Register-ObjectEvent -InputObject $Toast -EventName Activated -Action {
-                param($sender, $e)
-                # 激活事件处理
-                $global:ToastActivatedArgs = $e
-                $global:ToastActivated = $true
-            } | Out-Null
+            # 点击激活由 claude:// 协议处理程序（ClaudeProtocolHandler.exe）负责，无需 PowerShell 事件注册
 
             $Notifier = [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier($AppId)
             $Notifier.Show($Toast)
