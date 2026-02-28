@@ -1,0 +1,8 @@
+{
+  "name": "notification",
+  "description": "桌面通知 - 任务完成时发送通知（Windows / macOS / Linux）",
+  "version": "2.0.0",
+  "author": {
+    "name": "conghuang"
+  }
+}
