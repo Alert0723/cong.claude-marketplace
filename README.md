@@ -25,18 +25,18 @@
 
 | 插件 | 平台 | 说明 |
 |------|------|------|
-| `notification-windows` | Windows | Windows 桌面通知（PowerShell） |
-| `notification-unix` | macOS/Linux | Unix 桌面通知（Shell） |
+| `notification` | 全平台 | 桌面通知（Windows / macOS / Linux） |
 | `claude-hud` | 全平台 | 实时状态行 HUD - 显示上下文用量、工具活动、Agent 状态等 |
 | `claude-mem` | 全平台 | 持久化内存系统 - 跨会话上下文压缩与记忆 |
 | `pdf2skills` | 全平台 | PDF 转 Claude 技能 - 自动提取内容并生成技能目录 |
+| `claudeception` | 全平台 | 持续学习系统 - 从会话中提取可复用知识并固化为 Claude 技能 |
 | `plugin-dev` | 全平台 | 插件开发工具包 - Hooks、MCP、Commands、Agents、Skills 开发指南 |
 
 ---
 
-## 📢 Notification Plugin
+## 📢 notification
 
-桌面通知插件，在以下场景发送系统通知（仅当终端在后台时触发）：
+跨平台桌面通知插件（Windows / macOS / Linux），在以下场景发送系统通知（仅当终端在后台时触发）：
 
 - **权限请求** - 需要用户确认权限时
 - **任务完成** - Claude 完成任务时
@@ -44,36 +44,41 @@
 ### 安装
 
 ```bash
-# Windows
-/plugin install notification-windows@cong.claude-marketplace
-
-# macOS/Linux
-/plugin install notification-unix@cong.claude-marketplace
+/plugin install notification@cong.claude-marketplace
 ```
 
-### 初始化配置
+### 点击激活（跳转到对应会话）
+
+安装后自动配置，手动重装：
 
 ```bash
-/notification-config
+/notification:install
 ```
+
+- **Windows**：注册 `claude://` 注册表协议，点击通知的"打开会话"按钮直接激活对应终端窗口
+- **macOS**：通过 `terminal-notifier` 实现，自动通过 Homebrew 安装
+- **Linux**：通过 `xdg-mime` 注册 `claude://` 协议，需安装 `wmctrl` 或 `xdotool`
 
 ### 配置项
 
 | 配置项 | 类型 | 默认值 | 说明 |
 |--------|------|--------|------|
-| `bark_url` | string | 空 | Bark 推送地址 |
-| `bark_only` | boolean | false | 仅使用 Bark 推送 |
-| `timeout` | number | 3000 | 通知显示时长(毫秒) |
-| `always_notify` | boolean | false | 始终通知 |
+| `bark_url` | string | 空 | Bark 推送地址（iOS 推送） |
+| `bark_only` | boolean | false | 仅使用 Bark，跳过系统通知 |
+| `timeout` | number | 3000 | 通知显示时长（毫秒，仅 Linux 有效） |
+| `always_notify` | boolean | false | 始终通知（包括终端在前台时） |
 
-### 功能特点
+配置文件位置：`.claude/cong.claude-marketplace.local.md`
 
-- 智能检测终端窗口状态
-- 支持系统通知和 Bark 推送
-- AI 主动通知集成
-- 丰富参数支持（紧急通知、消息分组、自定义铃声等）
+### Bark 推送
 
-详见 [NOTIFICATION_SETUP.md](./NOTIFICATION_SETUP.md)
+```bash
+# macOS / Linux
+"${CLAUDE_PLUGIN_ROOT}/skills/notification-config/scripts/bark.sh" -u "URL" -m "消息" -t "标题"
+
+# Windows
+powershell -File "${CLAUDE_PLUGIN_ROOT}/skills/notification-config/scripts/bark.ps1" -Url "URL" -Message "消息" -Title "标题"
+```
 
 ---
 
@@ -199,6 +204,30 @@ Claude Code 持久化内存系统，实现跨会话上下文压缩与记忆。
         ├── index.md                 # 技能导航
         └── <技能名称>/SKILL.md      # 单个技能文件
 ```
+
+---
+
+## 🧠 claudeception
+
+持续学习系统，自动从工作会话中提取可复用知识并将其固化为新的 Claude Code 技能。
+
+### 安装
+
+```bash
+/plugin install claudeception@cong.claude-marketplace
+```
+
+### 工作原理
+
+- 在对话结束时自动评估是否有值得提取的知识（非显而易见的调试过程、解决方案、平台特性等）
+- 识别有价值的知识后，自动创建新的 Claude 技能文件
+- 通过 `/claudeception` 命令主动触发会话学习回顾
+
+### 触发场景
+
+- `/claudeception` 命令 - 主动回顾当前会话的学习内容
+- "save this as a skill" / "extract a skill from this" - 手动提取
+- 完成任何涉及非显而易见调试、变通方案或试错发现的任务后
 
 ---
 
