@@ -1,3 +1,4 @@
 nul
 *.local.md
 /.claude/settings.local.json
+/docs/**

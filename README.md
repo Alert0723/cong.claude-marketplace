@@ -27,7 +27,6 @@
 |------|------|------|
 | `notification` | 全平台 | 桌面通知（Windows / macOS / Linux） |
 | `claude-hud` | 全平台 | 实时状态行 HUD - 显示上下文用量、工具活动、Agent 状态等 |
-| `claude-mem` | 全平台 | 持久化内存系统 - 跨会话上下文压缩与记忆 |
 | `pdf2skills` | 全平台 | PDF 转 Claude 技能 - 自动提取内容并生成技能目录 |
 | `claudeception` | 全平台 | 持续学习系统 - 从会话中提取可复用知识并固化为 Claude 技能 |
 | `plugin-dev` | 全平台 | 插件开发工具包 - Hooks、MCP、Commands、Agents、Skills 开发指南 |
@@ -122,35 +121,6 @@ Context █████░░░░░ 45% │ Usage ██░░░░░░░
 - 显示/隐藏环境配置计数行
 
 ---
-
-## 🧠 claude-mem
-
-Claude Code 持久化内存系统，实现跨会话上下文压缩与记忆。
-
-### 安装
-
-```bash
-/plugin install claude-mem@cong.claude-marketplace
-```
-
-### 功能特性
-
-- 跨会话上下文压缩
-- 多种 Agent 模式支持
-- 多语言模式（Python、TypeScript、Go 等）
-- MCP 集成
-- 可视化界面
-
-### 组件
-
-- **Agents** - 专业处理代理
-- **Commands** - 命令系统
-- **Hooks** - 事件钩子
-- **Modes** - 多语言模式配置
-- **Skills** - 技能定义
-
----
-
 
 ## 📄 pdf2skills
 
