@@ -28,7 +28,6 @@
 | `notification` | 全平台 | 桌面通知（Windows / macOS / Linux） |
 | `claude-hud` | 全平台 | 实时状态行 HUD - 显示上下文用量、工具活动、Agent 状态等 |
 | `pdf2skills` | 全平台 | PDF 转 Claude 技能 - 自动提取内容并生成技能目录 |
-| `claudeception` | 全平台 | 持续学习系统 - 从会话中提取可复用知识并固化为 Claude 技能 |
 | `plugin-dev` | 全平台 | 插件开发工具包 - Hooks、MCP、Commands、Agents、Skills 开发指南 |
 
 ---
@@ -177,29 +176,6 @@ Context █████░░░░░ 45% │ Usage ██░░░░░░░
 
 ---
 
-## 🧠 claudeception
-
-持续学习系统，自动从工作会话中提取可复用知识并将其固化为新的 Claude Code 技能。
-
-### 安装
-
-```bash
-/plugin install claudeception@cong.claude-marketplace
-```
-
-### 工作原理
-
-- 在对话结束时自动评估是否有值得提取的知识（非显而易见的调试过程、解决方案、平台特性等）
-- 识别有价值的知识后，自动创建新的 Claude 技能文件
-- 通过 `/claudeception` 命令主动触发会话学习回顾
-
-### 触发场景
-
-- `/claudeception` 命令 - 主动回顾当前会话的学习内容
-- "save this as a skill" / "extract a skill from this" - 手动提取
-- 完成任何涉及非显而易见调试、变通方案或试错发现的任务后
-
----
 
 ## 🛠️ Plugin Development Toolkit (plugin-dev)
 

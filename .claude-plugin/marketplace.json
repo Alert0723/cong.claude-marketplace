@@ -24,10 +24,5 @@
       "source": "./pdf2skills",
       "description": "将PDF文档转换为Claude技能 - 自动从PDF提取内容并生成技能目录结构"
     },
-    {
-      "name": "claudeception",
-      "source": "./claudeception",
-      "description": "持续学习系统 - 从工作会话中提取可复用知识并将其固化为新的 Claude Code 技能"
-    }
   ]
 }
