@@ -1,7 +1,7 @@
 ---
 name: versioning
 description: 当用户需要检查 Claude Code 版本、解析版本号、获取版本更新日志或处理版本相关的任务时激活
-version: 1.0.0
+version: 1.1.0
 ---
 
 # Version Management
@@ -10,13 +10,18 @@ version: 1.0.0
 
 ## Semver 版本号
 
-Claude Code 使用语义化版本号格式：`MAJOR.MINOR.PATCH`
+Claude Code 使用语义化版本号格式：`MAJOR.MINOR.PATCH[-PRERELEASE]`
 
 - **MAJOR**: 主版本号，不兼容的 API 修改
 - **MINOR**: 次版本号，向下兼容的功能性新增
 - **PATCH**: 修订号，向下兼容的问题修正
+- **PRERELEASE** (可选): 预发布标识，如 `-beta.1`、`-rc.2`、`-alpha.1`
 
-示例：`2.1.74` 表示主版本 2，次版本 1，修订号 74
+示例：
+- `2.1.74` - 稳定版
+- `2.2.0-beta.1` - Beta 测试版
+- `2.2.0-rc.1` - Release Candidate 版本
+- `2.2.0-alpha.1` - Alpha 版本
 
 ## 版本比较
 
@@ -42,8 +47,17 @@ claude --version
 ### 获取最新版本（npm）
 
 ```bash
+# 获取最新版本
 npm view @anthropic-ai/claude-code version
+
+# 获取 dist-tags（包含稳定版和测试版）
+npm view @anthropic-ai/claude-code dist-tags --json
 ```
+
+**dist-tags 说明**：
+- `latest`: 最新发布的版本（默认安装）
+- `stable`: 明确标记为稳定版的版本
+- `next`: 下一个版本（通常是测试版）
 
 ### 获取最新版本（GitHub API）
 
@@ -116,7 +130,7 @@ curl -s "https://api.github.com/repos/anthropics/claude-code/releases?per_page=3
 
 check_frequency: daily  # 检查频率: always, daily, weekly, never
 last_check_date: 2026-03-13  # 最后检查日期
-
+check_beta: true  # 是否检查测试版: true/false
 notification: true  # 是否使用桌面通知
 ---
 ```
@@ -164,5 +178,46 @@ sed -i "s/last_check_date:.*/last_check_date: $(date +%Y-%m-%d)/" .claude/versio
 ## 参考资源
 
 详见 `scripts/` 目录中的辅助脚本：
-- `get-versions.sh` - 获取版本信息
+- `get-versions.sh` - 获取版本信息（当前版本、稳定版、最新版本、版本类型）
 - `get-changelog.sh` - 获取更新日志
+
+## 版本类型检测
+
+### 判断版本类型
+
+根据版本号后缀判断版本类型：
+
+| 版本号示例 | 类型 |
+|-----------|------|
+| `2.1.74` | `stable` 稳定版 |
+| `2.2.0-beta.1` | `beta` 测试版 |
+| `2.2.0-rc.1` | `rc` 候选发布版 |
+| `2.2.0-alpha.1` | `alpha` 内测版 |
+| `2.2.0-nightly.20250314` | `nightly` 每夜构建版 |
+| `2.2.0-next.1` | `next` 下一个版本 |
+
+### shell 脚本检测方法
+
+```bash
+version_type="stable"
+case "$version" in
+    *-beta.*)   version_type="beta" ;;
+    *-rc.*)     version_type="rc" ;;
+    *-alpha.*)  version_type="alpha" ;;
+    *-nightly.*) version_type="nightly" ;;
+    *-next.*)   version_type="next" ;;
+    *-[a-zA-Z]*.*) version_type="other" ;;
+esac
+```
+
+### get-versions.sh 输出格式
+
+```
+current_version|stable_version|latest_version|version_type
+```
+
+示例输出：
+```
+2.1.74|2.1.58|2.1.75|stable
+2.1.74|2.1.74|2.2.0-beta.1|beta
+```

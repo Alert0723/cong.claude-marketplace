@@ -14,16 +14,31 @@ allowed-tools: ["Bash", "AskUserQuestion", "WebSearch"]
 
 使用 `claude --version` 获取当前安装的版本号。
 
-### 2. 获取最新版本
+### 2. 获取版本信息
 
-使用 `npm view @anthropic-ai/claude-code version` 获取最新可用版本。
+使用 `./get-versions.sh` 获取版本信息，输出格式为：
+```
+current_version|stable_version|latest_version|latest_version_type
+```
 
-### 3. 对比版本
+- `current_version`: 当前安装的版本
+- `stable_version`: 最新稳定版
+- `latest_version`: 最新版本（可能是稳定版或测试版）
+- `latest_version_type`: 版本类型（stable/beta/rc/alpha/nightly/next/other）
+
+### 3. 检查配置
+
+读取配置文件 `.claude/version-checker.local.md`，检查 `check_beta` 设置：
+- 如果 `check_beta: false` 且 `latest_version_type` 不是 `stable`：只提示稳定版更新
+- 如果 `check_beta: true` 或 `latest_version_type` 是 `stable`：正常显示最新版本
+
+### 4. 对比版本
 
 - 如果当前版本等于最新版本：显示"当前已是最新版本"，不进行后续操作
 - 如果当前版本低于最新版本：继续获取更新差异
+- 如果有可用更新但只检查稳定版：显示稳定版更新信息
 
-### 4. 获取更新差异
+### 5. 获取更新差异
 
 使用以下命令获取更新日志：
 
@@ -40,11 +55,13 @@ curl -s "https://api.github.com/repos/anthropics/claude-code/releases" | ...
 
 显示格式示例：
 
+**稳定版更新：**
+
 ```
 发现新版本！
 
 当前版本: 2.1.50
-最新版本: 2.1.74
+最新稳定版: 2.1.74 [稳定版]
 
 主要更新：
 - 添加 /context 命令的可操作建议
@@ -52,6 +69,21 @@ curl -s "https://api.github.com/repos/anthropics/claude-code/releases" | ...
 - 修复 MCP OAuth 认证问题
 - 修复语音模式问题
 - 修复 RTL 文本渲染问题
+```
+
+**测试版更新：**
+
+```
+发现新版本！
+
+当前版本: 2.1.74
+最新稳定版: 2.1.74 [稳定版]
+最新版本: 2.2.0-beta.1 [测试版]
+
+主要更新（测试版）：
+- 新增实验性功能 X
+- 性能优化改进
+- 已知问题：功能 Y 可能不稳定
 ```
 
 ### 6. 询问更新意向
