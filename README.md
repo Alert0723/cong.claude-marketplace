@@ -79,6 +79,23 @@
 powershell -File "${CLAUDE_PLUGIN_ROOT}/skills/notification-config/scripts/bark.ps1" -Url "URL" -Message "消息" -Title "标题"
 ```
 
+更好的方式是从项目配置文件读取 Bark URL：
+
+```bash
+# 1. 检查配置文件是否存在
+if [ -f ".claude/cong.claude-marketplace.local.md" ]; then
+    # 2. 提取 bark_url
+    BARK_URL=$(sed -n '/^---$/,/^---$/{ /^---$/d; p; }' .claude/cong.claude-marketplace.local.md | grep '^bark_url:' | sed 's/bark_url: *//' | sed 's/^"\(.*\)"$/\1/')
+
+    # 3. 如果配置了 Bark，发送通知
+    if [ -n "$BARK_URL" ]; then
+        bash ~/.claude/plugins/cache/cong.claude-marketplace/*/skills/notification-config/scripts/bark.sh -u "$BARK_URL" -t "Claude Code" -m "任务已完成"
+    fi
+fi
+```
+
+
+
 ---
 
 ## 📊 claude-hud

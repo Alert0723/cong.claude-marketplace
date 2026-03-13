@@ -1,5 +1,6 @@
 {
-  "SessionStart": [
+  "hooks": {
+    "SessionStart": [
     {
       "type": "prompt",
       "matcher": ".*",

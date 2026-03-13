@@ -1,6 +1,6 @@
 {
   "name": "version-checker",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Claude Code 版本检查与更新工具 - 检查最新版本、显示更新差异、支持手动和自动更新检查",
   "author": {
     "name": "conghuang",
