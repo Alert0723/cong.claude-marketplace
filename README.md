@@ -29,6 +29,7 @@
 | `claude-hud` | 全平台 | 实时状态行 HUD - 显示上下文用量、工具活动、Agent 状态等 |
 | `pdf2skills` | 全平台 | PDF 转 Claude 技能 - 自动提取内容并生成技能目录 |
 | `plugin-dev` | 全平台 | 插件开发工具包 - Hooks、MCP、Commands、Agents、Skills 开发指南 |
+| `version-checker` | 全平台 | Claude Code 版本检查与更新工具 |
 
 ---
 
@@ -176,6 +177,48 @@ Context █████░░░░░ 45% │ Usage ██░░░░░░░
 
 ---
 
+## 🔄 version-checker
+
+Claude Code 版本检查与更新工具，自动检查最新版本并显示更新差异。
+
+### 安装
+
+```bash
+/plugin install version-checker@cong.claude-marketplace
+```
+
+### 主要命令
+
+```bash
+# 检查版本更新（手动触发）
+/version-check
+
+# 配置检查频率和通知方式
+/version-checker:config
+```
+
+### 配置选项
+
+运行 `/version-checker:config` 可配置：
+
+| 配置项 | 选项 | 说明 |
+|--------|------|------|
+| **检查频率** | 每天检查 | 每天启动时检查一次（推荐） |
+| | 每次启动检查 | 每次启动都检查 |
+| | 每周检查 | 每周检查一次 |
+| | 不自动检查 | 仅通过命令手动检查 |
+| **通知方式** | 桌面通知 | 使用系统桌面通知（需要 notification 插件） |
+| | 终端显示 | 在终端中直接显示更新提示 |
+
+### 自动检查
+
+插件会在每次会话开始时自动检查版本更新（根据配置频率），发现新版本时会：
+- 显示版本号和更新差异
+- 询问是否更新到最新版本或指定版本
+
+配置文件位置：`.claude/version-checker.local.md`
+
+---
 
 ## 🛠️ Plugin Development Toolkit (plugin-dev)
 
