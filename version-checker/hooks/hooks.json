@@ -1,4 +1,5 @@
 {
+  "description": "Claude Code版本检查与更新工具 - 检查最新版本、显示更新差异、支持自动检查",
   "hooks": {
     "SessionStart": [
       {
