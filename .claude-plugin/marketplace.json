@@ -23,6 +23,11 @@
       "name": "pdf2skills",
       "source": "./pdf2skills",
       "description": "将PDF文档转换为Claude技能 - 自动从PDF提取内容并生成技能目录结构"
+    },
+    {
+      "name": "version-checker",
+      "source": "./version-checker",
+      "description": "Claude Code版本检查与更新工具 - 检查最新版本、显示更新差异、支持自动检查"
     }
   ]
 }

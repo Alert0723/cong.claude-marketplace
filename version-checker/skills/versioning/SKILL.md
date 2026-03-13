@@ -1,0 +1,168 @@
+---
+name: versioning
+description: 当用户需要检查 Claude Code 版本、解析版本号、获取版本更新日志或处理版本相关的任务时激活
+version: 1.0.0
+---
+
+# Version Management
+
+本技能提供版本号解析、版本比较和更新日志获取的知识。
+
+## Semver 版本号
+
+Claude Code 使用语义化版本号格式：`MAJOR.MINOR.PATCH`
+
+- **MAJOR**: 主版本号，不兼容的 API 修改
+- **MINOR**: 次版本号，向下兼容的功能性新增
+- **PATCH**: 修订号，向下兼容的问题修正
+
+示例：`2.1.74` 表示主版本 2，次版本 1，修订号 74
+
+## 版本比较
+
+使用字符串比较即可（因为是点分隔的数字）：
+
+```bash
+# 检查是否需要更新
+if [ "$(printf '%s\n' "$latest" "$current" | sort -V | head -n1)" != "$current" ]; then
+    # 有新版本
+fi
+```
+
+## 获取版本信息
+
+### 获取当前版本
+
+```bash
+claude --version
+# 输出: 2.1.74 (Claude Code)
+# 需要提取: echo "$output" | grep -oP '\d+\.\d+\.\d+'
+```
+
+### 获取最新版本（npm）
+
+```bash
+npm view @anthropic-ai/claude-code version
+```
+
+### 获取最新版本（GitHub API）
+
+```bash
+curl -s "https://api.github.com/repos/anthropics/claude-code/releases?per_page=1" \
+  | grep -oP '"tag_name":\s*"v\K[0-9.]+"'
+```
+
+## 获取更新日志
+
+### 从 GitHub Releases API 获取
+
+```bash
+# 获取最新发布的 release
+curl -s "https://api.github.com/repos/anthropics/claude-code/releases/latest"
+
+# 获取所有 releases（分页）
+curl -s "https://api.github.com/repos/anthropics/claude-code/releases?per_page=30"
+```
+
+**响应格式**：
+```json
+{
+  "tag_name": "v2.1.74",
+  "name": "v2.1.74",
+  "body": "## What's changed\n\n- Feature 1\n- Fix 2\n..."
+}
+```
+
+### 提取版本间的更新
+
+获取从 `2.1.50` 到 `2.1.74` 之间的更新：
+
+1. 获取所有 releases 列表
+2. 筛选出在 2.1.50 之后的版本
+3. 按时间倒序排列
+4. 提取每个版本的 `body` 内容
+
+## 更新日志格式化
+
+将更新日志格式化为简洁的一句话总结：
+
+- 识别 `body` 中的每个更新项（通常以 `-` 开头）
+- 去除版本号和多余的空行
+- 每个功能用一句话概括
+
+示例：
+
+**原始**：
+```
+## What's changed
+
+- Added actionable suggestions to `/context` command — identifies context-heavy tools, memory bloat, and capacity warnings with specific optimization tips
+- Fixed memory leak where streaming API response buffers were not released when the generator was terminated early
+```
+
+**格式化后**：
+```
+- /context 命令新增可操作建议
+- 修复内存泄漏（流式 API 响应缓冲未释放）
+```
+
+## 配置文件格式
+
+使用 YAML frontmatter 格式的 markdown 文件存储配置：
+
+```markdown
+---
+# Version Checker 配置
+
+check_frequency: daily  # 检查频率: always, daily, weekly, never
+last_check_date: 2026-03-13  # 最后检查日期
+
+notification: true  # 是否使用桌面通知
+---
+```
+
+## 日期比较
+
+检查是否需要更新（基于频率）：
+
+```bash
+# 获取今天的日期
+today=$(date +%Y-%m-%d)
+
+# 获取配置的最后检查日期
+last_check=$(grep "last_check_date:" .claude/version-checker.local.md | cut -d: -f2 | tr -d ' ')
+
+# 检查频率
+frequency=$(grep "check_frequency:" .claude/version-checker.local.md | cut -d: -f2 | tr -d ' ')
+
+case $frequency in
+  always)  # 总是检查
+    need_check=true
+    ;;
+  daily)   # 每天检查
+    if [[ "$today" > "$last_check" ]]; then
+      need_check=true
+    fi
+    ;;
+  weekly)  # 每周检查
+    # 计算日期差
+    ;;
+  never)   # 不检查
+    need_check=false
+    ;;
+esac
+```
+
+## 更新配置文件
+
+检查完成后，更新 `last_check_date`：
+
+```bash
+sed -i "s/last_check_date:.*/last_check_date: $(date +%Y-%m-%d)/" .claude/version-checker.local.md
+```
+
+## 参考资源
+
+详见 `scripts/` 目录中的辅助脚本：
+- `get-versions.sh` - 获取版本信息
+- `get-changelog.sh` - 获取更新日志
