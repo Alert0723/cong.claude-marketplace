@@ -6,7 +6,6 @@
         "hooks": [
           {
             "type": "prompt",
-            "matcher": ".*",
             "prompt": "You are checking for Claude Code updates. Follow these steps:\n\n1. Read the version checker configuration from `.claude/version-checker.local.md` in the current project directory. If the file doesn't exist, use defaults (daily frequency).\n\n2. Check the `check_frequency` setting:\n   - 'never': Do not check for updates. Stop.\n   - 'always': Always check for updates.\n   - 'daily': Check if today's date is different from `last_check_date`.\n   - 'weekly': Check if more than 7 days have passed since `last_check_date`.\n\n3. If a check is needed:\n   - Get the current version using `claude --version`\n   - Get the latest version using `npm view @anthropic-ai/claude-code version`\n   - Compare versions\n\n4. If there is a NEW version available:\n   - Get the changelog between the current and latest versions\n   - Format the updates: each feature as a one-line summary\n   - Display the update notification with version numbers and changes\n   - Ask the user if they want to update (to latest or specific version)\n\n5. If there is NO new version:\n   - Do NOT display any notification or message\n   - Just update the `last_check_date` if needed\n\n6. After the check (whether or not there was an update), update `last_check_date` to today's date in the config file.\n\nIMPORTANT: Only show a notification when there IS a new version. No feedback when versions match."
           }
         ]
