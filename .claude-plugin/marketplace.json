@@ -38,6 +38,11 @@
       "name": "lua-lsp",
       "source": "./lua-lsp",
       "description": "Lua 语言服务器 - 提供代码智能和诊断支持"
+    },
+    {
+      "name": "csharp-lsp",
+      "source": "./csharp-lsp",
+      "description": "C# 语言服务器 - 提供代码智能和诊断支持"
     }
   ]
 }

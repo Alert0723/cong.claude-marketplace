@@ -32,6 +32,7 @@
 | `version-checker` | 全平台 | Claude Code 版本检查与更新工具 |
 | `superpowers` | 全平台 | Claude Code 核心技能库 - TDD、调试、协作模式和最佳实践工作流 |
 | `lua-lsp` | 全平台 | Lua 语言服务器 - 提供代码智能和诊断支持 |
+| `csharp-lsp` | 全平台 | C# 语言服务器 - 提供代码智能和诊断支持 |
 
 ---
 
@@ -410,6 +411,47 @@ sudo dnf install lua-language-server
 
 - [Lua Language Server GitHub](https://github.com/LuaLS/lua-language-server)
 - [官方文档](https://luals.github.io/)
+
+---
+
+## 💜 csharp-lsp
+
+C# 语言服务器插件，提供代码智能和诊断支持。
+
+### 安装
+
+```bash
+/plugin install csharp-lsp@cong.claude-marketplace
+```
+
+### 安装语言服务器
+
+此插件需要安装 C# 语言服务器。
+
+#### .NET 工具（推荐）
+
+```bash
+dotnet tool install --global csharp-ls
+```
+
+#### macOS (Homebrew)
+
+```bash
+brew install csharp-ls
+```
+
+### 系统要求
+
+- .NET SDK 6.0 或更高版本
+
+### 支持的文件扩展名
+
+- `.cs`
+
+### 更多信息
+
+- [csharp-ls GitHub](https://github.com/razzmatazz/csharp-language-server)
+- [.NET SDK 下载](https://dotnet.microsoft.com/download)
 
 ---
 

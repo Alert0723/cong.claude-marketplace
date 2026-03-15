@@ -1,0 +1,10 @@
+{
+  "name": "csharp-lsp",
+  "version": "1.0.0",
+  "description": "C# language server for Claude Code - 提供代码智能和诊断支持",
+  "author": {
+    "name": "Anthropic"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/razzmatazz/csharp-language-server"
+}
