@@ -1,0 +1,10 @@
+{
+  "name": "lua-lsp",
+  "version": "1.0.0",
+  "description": "Lua language server for Claude Code - 提供代码智能和诊断支持",
+  "author": {
+    "name": "Anthropic"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/LuaLS/lua-language-server"
+}

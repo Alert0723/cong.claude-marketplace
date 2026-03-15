@@ -31,6 +31,7 @@
 | `plugin-dev` | 全平台 | 插件开发工具包 - Hooks、MCP、Commands、Agents、Skills 开发指南 |
 | `version-checker` | 全平台 | Claude Code 版本检查与更新工具 |
 | `superpowers` | 全平台 | Claude Code 核心技能库 - TDD、调试、协作模式和最佳实践工作流 |
+| `lua-lsp` | 全平台 | Lua 语言服务器 - 提供代码智能和诊断支持 |
 
 ---
 
@@ -356,6 +357,59 @@ Claude Code 官方插件开发工具包，提供完整的插件开发指南和�
 6. Validation - 运行验证检查
 7. Testing - 验证插件
 8. Documentation - 完成 README
+
+---
+
+## 🌙 lua-lsp
+
+Lua 语言服务器插件，提供代码智能和诊断支持。
+
+### 安装
+
+```bash
+/plugin install lua-lsp@cong.claude-marketplace
+```
+
+### 安装语言服务器
+
+此插件需要安装 Lua 语言服务器：
+
+#### macOS (Homebrew)
+
+```bash
+brew install lua-language-server
+```
+
+#### Linux (Ubuntu/Debian - Snap)
+
+```bash
+sudo snap install lua-language-server --classic
+```
+
+#### Linux (Arch Linux)
+
+```bash
+sudo pacman -S lua-language-server
+```
+
+#### Linux (Fedora)
+
+```bash
+sudo dnf install lua-language-server
+```
+
+#### 手动安装
+
+从 [GitHub releases](https://github.com/LuaLS/lua-language-server/releases) 下载预编译二进制文件。
+
+### 支持的文件扩展名
+
+- `.lua`
+
+### 更多信息
+
+- [Lua Language Server GitHub](https://github.com/LuaLS/lua-language-server)
+- [官方文档](https://luals.github.io/)
 
 ---
 

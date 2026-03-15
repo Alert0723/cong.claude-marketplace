@@ -33,6 +33,11 @@
       "name": "superpowers",
       "source": "./superpowers",
       "description": "Claude Code 核心技能库 - TDD、调试、协作模式和最佳实践工作流"
+    },
+    {
+      "name": "lua-lsp",
+      "source": "./lua-lsp",
+      "description": "Lua 语言服务器 - 提供代码智能和诊断支持"
     }
   ]
 }
