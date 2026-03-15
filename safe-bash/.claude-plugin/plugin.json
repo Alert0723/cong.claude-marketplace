@@ -1,0 +1,8 @@
+{
+  "name": "safe-bash",
+  "description": "安全 Bash Hook - 只读命令自动放行，三层防护机制（危险模式检测 -> 黑名单拦截 -> 白名单放行）",
+  "version": "1.0.0",
+  "author": {
+    "name": "conghuang"
+  }
+}

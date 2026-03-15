@@ -48,6 +48,11 @@
       "name": "claude-md-management",
       "source": "./claude-md-management",
       "description": "CLAUDE.md 管理工具 - 审计质量、捕获学习内容、保持项目记忆更新"
+    },
+    {
+      "name": "safe-bash",
+      "source": "./safe-bash",
+      "description": "安全 Bash Hook - 只读命令自动放行，三层防护机制（危险模式检测 -> 黑名单拦截 -> 白名单放行）"
     }
   ]
 }
