@@ -30,6 +30,7 @@
 | `pdf2skills` | 全平台 | PDF 转 Claude 技能 - 自动提取内容并生成技能目录 |
 | `plugin-dev` | 全平台 | 插件开发工具包 - Hooks、MCP、Commands、Agents、Skills 开发指南 |
 | `version-checker` | 全平台 | Claude Code 版本检查与更新工具 |
+| `superpowers` | 全平台 | Claude Code 核心技能库 - TDD、调试、协作模式和最佳实践工作流 |
 
 ---
 
@@ -247,6 +248,65 @@ Claude Code 版本检查与更新工具，支持区分稳定版和测试版，�
 - 根据配置决定是否显示测试版更新
 
 配置文件位置：`.claude/version-checker.local.md`
+
+---
+
+## ⚡ Superpowers
+
+Claude Code 核心技能库，提供完整的软件开发生命周期工作流。
+
+### 安装
+
+```bash
+/plugin install superpowers@cong.claude-marketplace
+```
+
+### 工作流程
+
+1. **brainstorming** - 编写代码前激活，通过问题细化想法，探索替代方案，展示设计以供验证
+
+2. **using-git-worktrees** - 设计批准后激活，在新分支创建隔离工作区，运行项目设置，验证干净的测试基线
+
+3. **writing-plans** - 使用批准的设计激活，将工作分解为小块任务（每个 2-5 分钟），每个任务都有确切的文件路径、完整代码和验证步骤
+
+4. **subagent-driven-development** 或 **executing-plans** - 使用计划激活，为每个任务派遣全新的子代理，进行两阶段审查（规范合规性，然后代码质量），或使用人工检查点批量执行
+
+5. **test-driven-development** - 实施期间激活，强制执行 RED-GREEN-REFACTOR：编写失败的测试，看它失败，编写最小代码，看它通过，提交
+
+6. **requesting-code-review** - 任务之间激活，对照计划进行审查，按严重程度报告问题
+
+7. **finishing-a-development-branch** - 任务完成时激活，验证测试，提供选项（合并/PR/保留/丢弃），清理工作树
+
+### 核心技能
+
+#### 测试
+- **test-driven-development** - RED-GREEN-REFACTOR 循环
+
+#### 调试
+- **systematic-debugging** - 4 阶段根本原因过程
+- **verification-before-completion** - 确保真正修复
+
+#### 协作
+- **brainstorming** - 苏格拉底式设计细化
+- **writing-plans** - 详细实施计划
+- **executing-plans** - 带检查点的批量执行
+- **dispatching-parallel-agents** - 并发子代理工作流
+- **requesting-code-review** - 预审查检查清单
+- **receiving-code-review** - 回应反馈
+- **using-git-worktrees** - 并行开发分支
+- **finishing-a-development-branch** - 合并/PR 决策工作流
+- **subagent-driven-development** - 快速迭代与两阶段审查
+
+#### 元技能
+- **writing-skills** - 创建遵循最佳实践的新技能
+- **using-superpowers** - 技能系统介绍
+
+### 哲学
+
+- **测试驱动开发** - 始终先写测试
+- **系统化而非临时** - 过程优于猜测
+- **减少复杂性** - 简单性为主要目标
+- **证据优于声明** - 在声明成功之前验证
 
 ---
 

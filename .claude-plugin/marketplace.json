@@ -28,6 +28,11 @@
       "name": "version-checker",
       "source": "./version-checker",
       "description": "Claude Code版本检查与更新工具 - 支持区分稳定版和测试版、检查最新版本、显示更新差异、支持自动检查"
+    },
+    {
+      "name": "superpowers",
+      "source": "./superpowers",
+      "description": "Claude Code 核心技能库 - TDD、调试、协作模式和最佳实践工作流"
     }
   ]
 }
