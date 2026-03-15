@@ -33,6 +33,7 @@
 | `superpowers` | 全平台 | Claude Code 核心技能库 - TDD、调试、协作模式和最佳实践工作流 |
 | `lua-lsp` | 全平台 | Lua 语言服务器 - 提供代码智能和诊断支持 |
 | `csharp-lsp` | 全平台 | C# 语言服务器 - 提供代码智能和诊断支持 |
+| `claude-md-management` | 全平台 | CLAUDE.md 管理工具 - 审计质量、捕获学习内容、保持项目记忆更新 |
 
 ---
 
@@ -452,6 +453,47 @@ brew install csharp-ls
 
 - [csharp-ls GitHub](https://github.com/razzmatazz/csharp-language-server)
 - [.NET SDK 下载](https://dotnet.microsoft.com/download)
+
+---
+
+## 📝 claude-md-management
+
+CLAUDE.md 管理工具，用于审计质量、捕获学习内容并保持项目记忆更新。
+
+### 安装
+
+```bash
+/plugin install claude-md-management@cong.claude-marketplace
+```
+
+### 功能特性
+
+两个互补的工具，用于不同目的：
+
+| | claude-md-improver (技能) | /revise-claude-md (命令) |
+|---|---|---|
+| **用途** | 保持 CLAUDE.md 与代码库一致 | 捕获会话学习内容 |
+| **触发方式** | 代码库变更 | 会话结束 |
+| **使用时机** | 定期维护 | 会话中发现缺少上下文时 |
+
+### 使用方法
+
+#### 技能：claude-md-improver
+
+审计 CLAUDE.md 文件与当前代码库状态的对齐情况：
+
+```
+"审计我的 CLAUDE.md 文件"
+"检查我的 CLAUDE.md 是否最新"
+```
+
+#### 命令：/revise-claude-md
+
+从当前会话中捕获学习内容：
+
+```
+/revise-claude-md
+```
 
 ---
 

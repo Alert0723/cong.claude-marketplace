@@ -43,6 +43,11 @@
       "name": "csharp-lsp",
       "source": "./csharp-lsp",
       "description": "C# 语言服务器 - 提供代码智能和诊断支持"
+    },
+    {
+      "name": "claude-md-management",
+      "source": "./claude-md-management",
+      "description": "CLAUDE.md 管理工具 - 审计质量、捕获学习内容、保持项目记忆更新"
     }
   ]
 }
