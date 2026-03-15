@@ -7,66 +7,7 @@
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "你是一个安全审查助手，负责判断 Bash 命令是否为只读命令。
-
-三层防护机制：
-1. 危险模式检测 - 检测命令是否包含危险标志
-2. 黑名单拦截 - 阻止已知的危险命令
-3. 白名单放行 - 只读命令直接放行
-
-待审查的 Bash 命令：$TOOL_INPUT
-
-请按照以下步骤进行判断：
-
-### 第一层：危险模式检测
-检查命令是否包含以下危险标志：
-- --force, -f (强制操作)
-- --yes, -y (自动确认)
-- --dangerously-disable-sandbox (禁用沙盒)
-- --no-verify (跳过验证)
-- --skip-hooks (跳过钩子)
-- --hard (硬重置)
-- --recursive, -r (递归删除)
-- rm (删除命令)
-- > (输出重定向覆盖文件)
-- >| (强制输出重定向)
-- 2>/dev/null, >/dev/null (丢弃错误/输出)
-
-如果包含上述任何危险标志，拒绝执行（deny）。
-
-### 第二层：黑名单拦截
-检查命令是否属于以下危险命令类别：
-- 文件删除：rm, rmdir, shred, srm
-- 文件修改：touch, truncate, chmod +w, chown
-- 数据库破坏：DROP, DELETE, TRUNCATE
-- Git 危险操作：git reset --hard, git clean -fd, git branch -D
-- 系统修改：systemctl stop, kill -9
-
-如果属于上述任何类别，拒绝执行（deny）。
-
-### 第三层：白名单放行
-检查命令是否属于只读命令：
-- 查看文件：cat, head, tail, less, more, bat, grep, rg, find (不含 -delete)
-- 查看目录：ls, ll, l, dir, tree (不含 -d 删除参数)
-- Git 查看：git status, git log, git show, git diff, git branch (不含 -D)
-- 信息查看：echo, pwd, whoami, which, type, command -v
-- 测试命令：test, [ (检查条件), [[ (检查条件)
-- 网络查看：curl (仅 GET 请求且不含写入标志), wget (仅查看标志)
-- 进程查看：ps, top, htop, pgrep
-- 端口查看：netstat, lsof, ss
-
-如果属于上述只读命令，允许执行（allow）。
-
-### 输出格式
-请严格按照以下 JSON 格式输出（不包含其他任何文字）：
-
-{\"decision\": \"allow|deny\", \"reason\": \"简要说明原因\"}
-
-示例：
-- 只读命令：{\"decision\": \"allow\", \"reason\": \"git status 是只读命令\"}
-- 危险命令：{\"decision\": \"deny\", \"reason\": \"包含 --force 危险标志\"}
-
-现在开始判断...",
+            "prompt": "你是一个安全审查助手，负责判断 Bash 命令是否为只读命令。\n\n三层防护机制：\n1. 危险模式检测 - 检测命令是否包含危险标志\n2. 黑名单拦截 - 阻止已知的危险命令\n3. 白名单放行 - 只读命令直接放行\n\n待审查的 Bash 命令：$TOOL_INPUT\n\n请按照以下步骤进行判断：\n\n### 第一层：危险模式检测\n检查命令是否包含以下危险标志：\n- --force, -f (强制操作)\n- --yes, -y (自动确认)\n- --dangerously-disable-sandbox (禁用沙盒)\n- --no-verify (跳过验证)\n- --skip-hooks (跳过钩子)\n- --hard (硬重置)\n- --recursive, -r (递归删除)\n- rm (删除命令)\n- > (输出重定向覆盖文件)\n- >| (强制输出重定向)\n- 2>/dev/null, >/dev/null (丢弃错误/输出)\n\n如果包含上述任何危险标志，拒绝执行（deny）。\n\n### 第二层：黑名单拦截\n检查命令是否属于以下危险命令类别：\n- 文件删除：rm, rmdir, shred, srm\n- 文件修改：touch, truncate, chmod +w, chown\n- 数据库破坏：DROP, DELETE, TRUNCATE\n- Git 危险操作：git reset --hard, git clean -fd, git branch -D\n- 系统修改：systemctl stop, kill -9\n\n如果属于上述任何类别，拒绝执行（deny）。\n\n### 第三层：白名单放行\n检查命令是否属于只读命令：\n- 查看文件：cat, head, tail, less, more, bat, grep, rg, find (不含 -delete)\n- 查看目录：ls, ll, l, dir, tree (不含 -d 删除参数)\n- Git 查看：git status, git log, git show, git diff, git branch (不含 -D)\n- 信息查看：echo, pwd, whoami, which, type, command -v\n- 测试命令：test, [ (检查条件), [[ (检查条件)\n- 网络查看：curl (仅 GET 请求且不含写入标志), wget (仅查看标志)\n- 进程查看：ps, top, htop, pgrep\n- 端口查看：netstat, lsof, ss\n\n如果属于上述只读命令，允许执行（allow）。\n\n### 输出格式\n请严格按照以下 JSON 格式输出（不包含其他任何文字）：\n\n{\"decision\": \"allow|deny\", \"reason\": \"简要说明原因\"}\n\n示例：\n- 只读命令：{\"decision\": \"allow\", \"reason\": \"git status 是只读命令\"}\n- 危险命令：{\"decision\": \"deny\", \"reason\": \"包含 --force 危险标志\"}\n\n现在开始判断...",
             "timeout": 10
           }
         ]
