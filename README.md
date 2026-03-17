@@ -99,7 +99,16 @@ if [ -f ".claude/cong.claude-marketplace.local.md" ]; then
 fi
 ```
 
+### 卸载
 
+```bash
+/notification:uninstall
+```
+
+此命令将：
+1. 卸载协议处理器（Windows 注册表 / Linux xdg-mime）
+2. 卸载插件文件
+3. 可选卸载 terminal-notifier（macOS）
 
 ---
 
