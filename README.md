@@ -142,6 +142,17 @@ Context █████░░░░░ 45% │ Usage ██░░░░░░░
 - 显示/隐藏待办事项进度行
 - 显示/隐藏环境配置计数行
 
+### 卸载
+
+```bash
+/claude-hud:uninstall
+```
+
+此命令将：
+1. 从设置中移除 statusline 配置
+2. 删除 claude-hud 配置文件
+3. 卸载插件文件
+
 ---
 
 ## 📄 pdf2skills

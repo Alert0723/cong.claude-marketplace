@@ -226,6 +226,23 @@ To disable, set `display.showUsage` to `false`.
 
 ---
 
+## Uninstall
+
+To completely remove claude-hud, run the uninstall command:
+
+```
+/claude-hud:uninstall
+```
+
+This will:
+1. Remove the statusline configuration from your settings
+2. Delete the claude-hud config file
+3. Uninstall the plugin files
+
+After uninstalling, the statusline will revert to Claude Code's default behavior.
+
+---
+
 ## Requirements
 
 - Claude Code v1.0.80+
