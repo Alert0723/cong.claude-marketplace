@@ -1,8 +1,8 @@
-﻿param(
-    [string]$Title = "Claude Code",
-    [string]$Message = "通知",
+param(
     [string]$Dir = "",
+    [string]$Reason = "",
     [string]$SessionId = "",
+    [string]$TranscriptPath = "",
     [string]$ActivateUrl = "claude://activate"
 )
 
@@ -34,6 +34,84 @@ if (Test-Path $configFile) {
             $alwaysNotify = $Matches[1] -eq 'true'
         }
     }
+}
+
+# 从 transcript 获取最后一条用户消息
+function Get-LastUserMessage {
+    param([string]$transcriptPath)
+
+    if ([string]::IsNullOrEmpty($transcriptPath) -or -not (Test-Path $transcriptPath)) {
+        return ""
+    }
+
+    try {
+        # 读取 transcript 文件（JSONL 格式），找到最后一个 user_message
+        # 用户消息格式: {"message":{"content":[{"type":"user_message","text":"..."}]}}
+        $lines = Get-Content $transcriptPath -Raw -Encoding UTF8
+        $lines = $lines -split '\r?\n' | Where-Object { $_ -match '"type":"user_message"' }
+
+        if ($lines.Count -gt 0) {
+            $lastLine = $lines[-1]
+            # 提取 text 字段
+            if ($lastLine -match '"text":"(([^"]|\\")*)"') {
+                $text = $Matches[1] -replace '\\"', '"' -replace '\\n', ' ' -replace '\\t', ' '
+                # 限制长度为 100 字符
+                if ($text.Length -gt 100) {
+                    $text = $text.Substring(0, 100) + "..."
+                }
+                return $text
+            }
+        }
+    } catch {
+        # 忽略错误
+    }
+
+    return ""
+}
+
+# 构建通知内容
+function Build-NotificationContent {
+    $title = "Claude Code"
+    $message = "会话已完成"
+
+    # 如果有 SessionId，用作对话名称
+    if ([string]::IsNullOrEmpty($SessionId) -eq $false) {
+        $sessionName = $SessionId.Substring(0, [Math]::Min(8, $SessionId.Length))
+        $title = "$title - [$sessionName]"
+    }
+
+    # 根据原因设置消息
+    if ([string]::IsNullOrEmpty($Reason) -eq $false) {
+        switch -Regex ($Reason) {
+            "^(user_requested|User requested)$" {
+                $message = "您手动结束了会话"
+            }
+            "^(timeout|Timeout)$" {
+                $message = "会话超时结束"
+            }
+            "^(error|Error)$" {
+                $message = "会话因错误结束"
+            }
+            default {
+                $message = "会话已完成"
+            }
+        }
+    }
+
+    # 如果有最后一条用户消息，添加到消息中
+    $lastMessage = Get-LastUserMessage $TranscriptPath
+    if ([string]::IsNullOrEmpty($lastMessage) -eq $false) {
+        $message = "$message - $lastMessage"
+    }
+
+    # 添加目录信息
+    if ([string]::IsNullOrEmpty($Dir) -eq $false) {
+        $parts = $Dir -split '[/\\]' | Where-Object { $_ }
+        $shortDir = ($parts | Select-Object -Last 2) -join '/'
+        $message = "$message - $shortDir"
+    }
+
+    return @($title, $message)
 }
 
 # 前台检测
@@ -68,11 +146,10 @@ for ($i = 0; $i -lt 20; $i++) {
 $shouldNotify = $alwaysNotify -or ($foregroundPid -ne $myTerminalPid)
 
 if ($shouldNotify) {
-    if ($Dir) {
-        $parts = $Dir -split '[/\\]' | Where-Object { $_ }
-        $shortDir = ($parts | Select-Object -Last 2) -join '/'
-        $Message = "$Message - $shortDir"
-    }
+    # 构建通知内容
+    $notification = Build-NotificationContent
+    $Title = $notification[0]
+    $Message = $notification[1]
 
     # 发送 Bark 通知
     if ($barkUrl) {

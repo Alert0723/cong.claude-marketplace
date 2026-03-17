@@ -1,10 +1,10 @@
 #!/bin/bash
 # Claude Code Notification Script for macOS/Linux
 
-TITLE="${1:-Claude Code}"
-MESSAGE="${2:-通知}"
-DIR="${3:-}"
-SESSION_ID="${4:-}"
+DIR="${1:-}"
+REASON="${2:-}"
+SESSION_ID="${3:-}"
+TRANSCRIPT_PATH="${4:-}"
 
 # 默认配置
 BARK_URL=""
@@ -40,6 +40,82 @@ if [[ -f "$CONFIG_FILE" ]]; then
     fi
 fi
 
+# 从 transcript 获取最后一条用户消息
+get_last_user_message() {
+    local transcript_path="$1"
+    if [[ -z "$transcript_path" ]] || [[ ! -f "$transcript_path" ]]; then
+        echo ""
+        return
+    fi
+
+    # 读取 transcript 文件（JSONL 格式），找到最后一个 user_message
+    # 用户消息格式: {"message":{"content":[{"type":"user_message","text":"..."}]}}
+    local last_message=$(tac "$transcript_path" 2>/dev/null | grep -o '"type":"user_message"' | head -1)
+
+    if [[ -n "$last_message" ]]; then
+        # 提取 text 字段
+        local line=$(tac "$transcript_path" 2>/dev/null | grep '"type":"user_message"' | head -1)
+        local text=$(echo "$line" | grep -o '"text":"[^"]*"' | sed 's/"text":"//' | sed 's/"$//' | head -c 100)
+        if [[ -n "$text" ]]; then
+            echo "$text"
+            return
+        fi
+    fi
+
+    echo ""
+}
+
+# 构建通知内容
+build_notification_content() {
+    local reason="$REASON"
+    local session_name="$SESSION_ID"
+    local last_message=$(get_last_user_message "$TRANSCRIPT_PATH")
+
+    # 默认标题
+    local title="Claude Code"
+
+    # 如果有 session_id，用作对话名称
+    if [[ -n "$session_name" ]]; then
+        # 只取前 8 位字符作为对话名称
+        session_name=$(echo "$session_name" | head -c 8)
+        title="$title - [$session_name]"
+    fi
+
+    # 默认消息
+    local message="会话已完成"
+
+    # 根据原因设置消息
+    if [[ -n "$reason" ]]; then
+        case "$reason" in
+            "user_requested"|"User requested")
+                message="您手动结束了会话"
+                ;;
+            "timeout"|"Timeout")
+                message="会话超时结束"
+                ;;
+            "error"|"Error")
+                message="会话因错误结束"
+                ;;
+            *)
+                message="会话已完成"
+                ;;
+        esac
+    fi
+
+    # 如果有最后一条用户消息，添加到消息中
+    if [[ -n "$last_message" ]]; then
+        message="$message - $last_message"
+    fi
+
+    # 添加目录信息
+    if [[ -n "$DIR" ]]; then
+        SHORT_DIR=$(echo "$DIR" | rev | cut -d'/' -f1-2 | rev)
+        message="$message - $SHORT_DIR"
+    fi
+
+    echo "$title|$message"
+}
+
 # 检测前台应用是否是终端
 send_notification() {
     local should_notify=false
@@ -61,11 +137,10 @@ send_notification() {
     fi
 
     if [[ "$should_notify" == "true" ]]; then
-        # 添加目录信息
-        if [ -n "$DIR" ]; then
-            SHORT_DIR=$(echo "$DIR" | rev | cut -d'/' -f1-2 | rev)
-            MESSAGE="$MESSAGE - $SHORT_DIR"
-        fi
+        # 构建通知内容
+        local result=$(build_notification_content)
+        TITLE=$(echo "$result" | cut -d'|' -f1)
+        MESSAGE=$(echo "$result" | cut -d'|' -f2-)
 
         # 发送 Bark 通知
         if [[ -n "$BARK_URL" ]]; then
