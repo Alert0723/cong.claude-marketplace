@@ -3,40 +3,52 @@
   "hooks": {
     "Setup": [
       {
-        "type": "command",
-        "command": "bash \"${CLAUDE_PLUGIN_ROOT}/skills/notification-config/scripts/install-protocol-handler.sh\"",
-        "timeout": 60
-      },
-      {
-        "type": "command",
-        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PLUGIN_ROOT}/skills/notification-config/scripts/install-protocol-handler.ps1\"",
-        "timeout": 30
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/skills/notification-config/scripts/install-protocol-handler.sh\"",
+            "timeout": 60
+          },
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PLUGIN_ROOT}/skills/notification-config/scripts/install-protocol-handler.ps1\"",
+            "timeout": 30
+          }
+        ]
       }
     ],
     "PermissionRequest": [
       {
         "matcher": "*",
-        "type": "command",
-        "command": "bash \"${CLAUDE_PLUGIN_ROOT}/skills/notification-config/scripts/notify.sh\" \"${CLAUDE_PROJECT_DIR}\" \"\" \"${HOOK_INPUT_SESSION_ID}\" \"${HOOK_INPUT_TRANSCRIPT_PATH}\"",
-        "timeout": 10
-      },
-      {
-        "matcher": "*",
-        "type": "command",
-        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PLUGIN_ROOT}/skills/notification-config/scripts/notify.ps1\" -Dir \"${CLAUDE_PROJECT_DIR}\" -SessionId \"${HOOK_INPUT_SESSION_ID}\" -TranscriptPath \"${HOOK_INPUT_TRANSCRIPT_PATH}\"",
-        "timeout": 10
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/skills/notification-config/scripts/notify.sh\" \"${CLAUDE_PROJECT_DIR}\" \"\" \"${HOOK_INPUT_SESSION_ID}\" \"${HOOK_INPUT_TRANSCRIPT_PATH}\"",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PLUGIN_ROOT}/skills/notification-config/scripts/notify.ps1\" -Dir \"${CLAUDE_PROJECT_DIR}\" -SessionId \"${HOOK_INPUT_SESSION_ID}\" -TranscriptPath \"${HOOK_INPUT_TRANSCRIPT_PATH}\"",
+            "timeout": 10
+          }
+        ]
       }
     ],
     "Stop": [
       {
         "type": "command",
-        "command": "bash \"${CLAUDE_PLUGIN_ROOT}/skills/notification-config/scripts/notify.sh\" \"${CLAUDE_PROJECT_DIR}\" \"${HOOK_INPUT_REASON}\" \"${HOOK_INPUT_SESSION_ID}\" \"${HOOK_INPUT_TRANSCRIPT_PATH}\"",
-        "timeout": 10
-      },
-      {
-        "type": "command",
-        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PLUGIN_ROOT}/skills/notification-config/scripts/notify.ps1\" -Dir \"${CLAUDE_PROJECT_DIR}\" -Reason \"${HOOK_INPUT_REASON}\" -SessionId \"${HOOK_INPUT_SESSION_ID}\" -TranscriptPath \"${HOOK_INPUT_TRANSCRIPT_PATH}\"",
-        "timeout": 10
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/skills/notification-config/scripts/notify.sh\" \"${CLAUDE_PROJECT_DIR}\" \"${HOOK_INPUT_REASON}\" \"${HOOK_INPUT_SESSION_ID}\" \"${HOOK_INPUT_TRANSCRIPT_PATH}\"",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PLUGIN_ROOT}/skills/notification-config/scripts/notify.ps1\" -Dir \"${CLAUDE_PROJECT_DIR}\" -Reason \"${HOOK_INPUT_REASON}\" -SessionId \"${HOOK_INPUT_SESSION_ID}\" -TranscriptPath \"${HOOK_INPUT_TRANSCRIPT_PATH}\"",
+            "timeout": 10
+          }
+        ]
       }
     ]
   }
