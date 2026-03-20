@@ -1,47 +1,42 @@
 ---
 name: lark-docs-agent
-description: |
-  Use this agent when: 用户提及需要操作飞书文档/云文档/多维表格，如"在飞书文档中..."、"更新飞书表格..."、"读取多维表格..."，或任务涉及 lark docs、feishu docs、bitable。该 agent 自主识别飞书文档相关需求并通过飞书 MCP 工具执行操作。
+description: Use this agent when: 用户提及需要操作飞书文档/云文档/多维表格，如"在飞书文档中..."、"更新飞书表格..."、"读取多维表格..."，或任务涉及 lark docs、feishu docs、bitable。该 agent 自主识别飞书文档相关需求并通过飞书 MCP 工具执行操作。
 
-  <example>
-  Context: 用户需要将项目进度更新到飞书多维表格
-  user: "帮我把今天的开发进度更新到飞书多维表格里"
-  assistant: "好的，我来帮您更新飞书多维表格的开发进度。"
-  <commentary>
-  用户明确提及"飞书多维表格"，需要操作飞书云文档，触发 lark-docs-agent。
-  </commentary>
-  assistant: "I'll use the lark-docs-agent to handle the Feishu bitable update."
-  </example>
+<example>
+Context: 用户需要将项目进度更新到飞书多维表格
+user: "帮我把今天的开发进度更新到飞书多维表格里"
+assistant: "I'll use the lark-docs-agent to handle the Feishu bitable update."
+<commentary>
+用户明确提及"飞书多维表格"，需要操作飞书云文档，触发 lark-docs-agent。
+</commentary>
+</example>
 
-  <example>
-  Context: 用户需要创建一份飞书文档
-  user: "在飞书文档中创建一份会议纪要"
-  assistant: "好的，我来帮您在飞书中创建会议纪要文档。"
-  <commentary>
-  用户提及"飞书文档"并需要创建操作，触发 lark-docs-agent。
-  </commentary>
-  assistant: "I'll use the lark-docs-agent to create the meeting notes in Feishu docs."
-  </example>
+<example>
+Context: 用户需要创建一份飞书文档
+user: "在飞书文档中创建一份会议纪要"
+assistant: "I'll use the lark-docs-agent to create the meeting notes in Feishu docs."
+<commentary>
+用户提及"飞书文档"并需要创建操作，触发 lark-docs-agent。
+</commentary>
+</example>
 
-  <example>
-  Context: 用户需要读取多维表格数据
-  user: "读取那个项目管理的 bitable，看看有哪些待办事项"
-  assistant: "好的，我来帮您读取项目管理多维表格的数据。"
-  <commentary>
-  用户提及"bitable"并需要读取操作，触发 lark-docs-agent。
-  </commentary>
-  assistant: "I'll use the lark-docs-agent to read the project management bitable."
-  </example>
+<example>
+Context: 用户需要读取多维表格数据
+user: "读取那个项目管理的 bitable，看看有哪些待办事项"
+assistant: "I'll use the lark-docs-agent to read the project management bitable."
+<commentary>
+用户提及"bitable"并需要读取操作，触发 lark-docs-agent。
+</commentary>
+</example>
 
-  <example>
-  Context: 用户需要同步数据到飞书
-  user: "把这份数据同步到 lark docs 的表格中"
-  assistant: "好的，我来帮您将数据同步到飞书表格。"
-  <commentary>
-  用户提及"lark docs"并需要同步数据，触发 lark-docs-agent。
-  </commentary>
-  assistant: "I'll use the lark-docs-agent to sync data to the Lark docs table."
-  </example>
+<example>
+Context: 用户需要同步数据到飞书
+user: "把这份数据同步到 lark docs 的表格中"
+assistant: "I'll use the lark-docs-agent to sync data to the Lark docs table."
+<commentary>
+用户提及"lark docs"并需要同步数据，触发 lark-docs-agent。
+</commentary>
+</example>
 
 model: haiku
 color: blue
