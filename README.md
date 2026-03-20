@@ -660,6 +660,8 @@ chmod +w script.sh
 - **多维表格操作** - 记录的增删改查
 - **智能识别** - 自动识别飞书文档相关需求
 - **Agent 自主执行** - lark-docs-agent 可自主处理飞书文档任务
+- **Windows 编码处理** - 自动处理 Windows 环境下中文 JSON 编码问题
+- **权限自动设置** - 创建文档后自动设置访问权限
 
 ### 前置要求
 
@@ -681,6 +683,22 @@ chmod +w script.sh
 用户: "把项目进度更新到飞书多维表格"
 用户: "读取那个 bitable 看看有哪些待办事项"
 ```
+
+### v0.4.0 更新
+
+- **重构**：SKILL.md 和 Agent 内容国际化（英文主体+中文关键词）
+- **优化**：创建 `references/` 目录，分离详细参考内容
+- **精简**：SKILL.md 从 174 行优化到约 100 行
+- **精简**：Agent 从 381 行优化到约 150 行
+- **新增**：`references/block-types.md` - 完整 Block 类型对照表
+- **新增**：`references/create-document-example.md` - 完整 PowerShell 示例
+
+### v0.3.0 更新
+
+- **修复**：Windows 环境下中文乱码问题（使用 UTF-8 无 BOM 文件）
+- **修复**：文档链接"页面不存在"问题（创建后自动设置权限）
+- **优化**：提升文档生成效率，内置 Block 类型速查表
+- **升级**：Agent 模型从 haiku 升级到 sonnet
 
 ---
 
