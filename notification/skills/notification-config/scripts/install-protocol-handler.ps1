@@ -1,4 +1,4 @@
-# Claude Protocol Handler 安装脚本
+﻿# Claude Protocol Handler 安装脚本
 param([switch]$Uninstall)
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path

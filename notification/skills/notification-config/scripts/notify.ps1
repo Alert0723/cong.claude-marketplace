@@ -1,4 +1,4 @@
-param(
+﻿param(
     [string]$Dir = "",
     [string]$Reason = "",
     [string]$SessionId = "",
