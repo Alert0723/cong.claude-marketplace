@@ -1,10 +1,6 @@
 ---
-name: uninstall
 description: 移除飞书 MCP 配置
-argument-hint: 无参数
-allowed-tools:
-  - Bash
-  - AskUserQuestion
+allowed-tools: Bash, AskUserQuestion
 ---
 
 # 移除飞书 MCP 配置

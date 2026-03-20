@@ -1,10 +1,6 @@
 ---
-name: install
 description: 配置飞书 MCP 服务器，连接飞书云文档
-argument-hint: 无参数
-allowed-tools:
-  - Bash
-  - AskUserQuestion
+allowed-tools: Bash, AskUserQuestion
 ---
 
 # 配置飞书 MCP

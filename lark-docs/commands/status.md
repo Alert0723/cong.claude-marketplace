@@ -1,9 +1,6 @@
 ---
-name: status
 description: 查看飞书 MCP 配置状态
-argument-hint: 无参数
-allowed-tools:
-  - Bash
+allowed-tools: Bash
 ---
 
 # 查看飞书 MCP 状态
