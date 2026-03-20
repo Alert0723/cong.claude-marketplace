@@ -53,6 +53,11 @@
       "name": "safe-bash",
       "source": "./safe-bash",
       "description": "安全 Bash Hook - 只读命令自动放行，三层防护机制（危险模式检测 -> 黑名单拦截 -> 白名单放行）"
+    },
+    {
+      "name": "lark-docs",
+      "source": "./lark-docs",
+      "description": "飞书云文档联动 - 通过 MCP 实现云文档和多维表格的自主操作"
     }
   ]
 }

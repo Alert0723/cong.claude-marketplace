@@ -35,6 +35,7 @@
 | `csharp-lsp` | 全平台 | C# 语言服务器 - 提供代码智能和诊断支持 |
 | `claude-md-management` | 全平台 | CLAUDE.md 管理工具 - 审计质量、捕获学习内容、保持项目记忆更新 |
 | `safe-bash` | 全平台 | 安全 Bash Hook - 只读命令自动放行，三层防护机制 |
+| `lark-docs` | 全平台 | 飞书云文档联动 - 通过 MCP 实现云文档和多维表格的自主操作 |
 
 ---
 
@@ -620,6 +621,66 @@ chmod +w script.sh
 - Hook 会在 Claude Code 启动时加载，修改配置后需要重启
 - 在 `ask` 模式下工作最佳，其他模式可能表现不同
 - 建议配合其他安全措施一起使用
+
+---
+
+## 📋 lark-docs
+
+飞书云文档联动插件，通过飞书 MCP 实现云文档和多维表格的自主操作。
+
+### 安装
+
+```bash
+/plugin install lark-docs@cong.claude-marketplace
+```
+
+### 配置飞书 MCP
+
+```bash
+/lark-docs:install
+```
+
+按提示输入飞书开放平台的 App_ID 和 App_Secret。
+
+### 查看配置状态
+
+```bash
+/lark-docs:status
+```
+
+### 移除配置
+
+```bash
+/lark-docs:uninstall
+```
+
+### 功能特性
+
+- **云文档操作** - 创建、读取、编辑飞书云文档
+- **多维表格操作** - 记录的增删改查
+- **智能识别** - 自动识别飞书文档相关需求
+- **Agent 自主执行** - lark-docs-agent 可自主处理飞书文档任务
+
+### 前置要求
+
+1. 飞书开放平台账号
+2. 已创建飞书应用并获取 App_ID 和 App_Secret
+3. 应用已开通文档/多维表格相关权限
+
+### 获取飞书应用凭证
+
+1. 访问 [飞书开放平台](https://open.feishu.cn/)
+2. 创建企业自建应用
+3. 在「凭证与基础信息」页面获取 App ID 和 App Secret
+4. 在「权限管理」中开通所需权限（如 `docs:doc`, `bitable:record` 等）
+
+### 使用示例
+
+```
+用户: "在飞书文档中创建一份会议纪要"
+用户: "把项目进度更新到飞书多维表格"
+用户: "读取那个 bitable 看看有哪些待办事项"
+```
 
 ---
 

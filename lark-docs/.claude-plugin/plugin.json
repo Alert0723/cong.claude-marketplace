@@ -1,0 +1,9 @@
+{
+  "name": "lark-docs",
+  "version": "0.2.0",
+  "description": "飞书云文档联动插件 - 通过 MCP 实现云文档和多维表格的自主编辑",
+  "author": {
+    "name": "cong.claude-marketplace"
+  },
+  "keywords": ["lark", "feishu", "docs", "bitable", "mcp"]
+}
