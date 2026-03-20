@@ -36,7 +36,6 @@
     ],
     "Stop": [
       {
-        "type": "command",
         "hooks": [
           {
             "type": "command",
