@@ -38,6 +38,23 @@ tools: ["Read", "Write", "Bash", "WebFetch", "WebSearch"]
 
 Expert agent for operating Feishu cloud documents and bitables through MCP tools.
 
+## Folder Token 配置（必须）
+
+### 为什么需要 FolderToken?
+
+这是权限安全设计:
+- lark-docx 只能访问你指定的文件夹
+- 不会影响其他飞书文档
+- 你完全控制工具的操作范围
+- 生成的文档所有者属于登录的用户（通过 OAuth）而非机器人
+
+### 获取方式
+
+1. 打开飞书 → "我的空间"(云盘)
+2. 创建文件夹（如 "AI-Documents"）
+3. 进入文件夹，复制 URL：`https://xxx.feishu.cn/drive/folder/<folder_token>`
+4. 在 `/lark-docs:install` 时配置
+
 ## Windows Encoding (Critical)
 
 When sending Chinese JSON via curl on Windows, MUST use UTF-8 without BOM file:
@@ -79,7 +96,7 @@ curl -X PUT "https://open.feishu.cn/open-apis/drive/v1/permissions/$docId/public
 
 **Document operations:**
 - `document_id` - From URL: `https://xxx.feishu.cn/docx/<document_id>`
-- `folder_token` - Optional, for specific folder
+- `folder_token` - 已在 MCP 配置中设置，无需手动传入
 
 **Bitable operations:**
 - `app_token` - From URL: `https://xxx.feishu.cn/base/<app_token>`
@@ -133,13 +150,15 @@ See Document Permissions section above.
 | Invalid token | Verify document_id/app_token from URL |
 | Rate limit | Wait and retry, reduce batch size |
 | Field type error | Check field format against type table |
+| Folder not found | Verify FolderToken in MCP config |
 
 ## Best Practices
 
-1. Verify MCP configured via `/lark-docs:install`
+1. Verify MCP configured via `/lark-docs:install` with FolderToken
 2. Batch bitable records: max 50 per batch
 3. Never expose App Secret in logs
 4. Provide document link after completion
+5. Documents owned by OAuth user, not bot
 
 ## Working Mode
 

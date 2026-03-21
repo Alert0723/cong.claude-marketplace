@@ -1,12 +1,49 @@
 ---
 name: lark-docs-operations
 description: Feishu/Lark cloud docs and bitable operations knowledge. TRIGGER when: 用户提及"飞书文档"、"飞书云文档"、"lark docs"、"feishu docs"、"多维表格"、"飞书表格"、"bitable"、"lark bitable"、"create feishu document"、"update bitable records", or needs to create/edit/read Feishu document content.
-version: 1.2.0
+version: 1.3.0
 ---
 
 # Feishu Cloud Documents Operations Guide
 
 Provides knowledge for operating Feishu cloud documents and bitables through MCP tools.
+
+## Folder Token（必须配置）
+
+### 为什么需要 FolderToken?
+
+这是权限安全设计:
+- lark-docx 只能访问你指定的文件夹
+- 不会影响其他飞书文档
+- 你完全控制工具的操作范围
+- 生成的文档所有者属于登录的用户（通过 OAuth）而非机器人
+
+### 如何获取 FolderToken?
+
+1. 打开飞书 → "我的空间"(云盘)
+2. 创建一个文件夹（如 "AI-Documents"）
+3. 进入文件夹，复制浏览器地址栏的 URL
+4. URL 格式：`https://xxx.feishu.cn/drive/folder/<folder_token>`
+5. 提取其中的 `<folder_token>` 部分
+
+### 配置方式
+
+在运行 `/lark-docs:install` 时输入 FolderToken，或手动配置 MCP：
+
+```json
+{
+  "command": "npx",
+  "args": [
+    "-y",
+    "@larksuiteoapi/lark-mcp",
+    "mcp",
+    "-a", "<App_ID>",
+    "-s", "<App_Secret>",
+    "--folder-token", "<Folder_Token>",
+    "--oauth"
+  ]
+}
+```
 
 ## Windows Encoding (Critical)
 
@@ -66,7 +103,7 @@ curl -X PUT "https://open.feishu.cn/open-apis/drive/v1/permissions/$docId/public
 
 | Operation | Tool | Parameters |
 |-----------|------|------------|
-| Create | `lark_doc_create` | title, folder_token (optional) |
+| Create | `lark_doc_create` | title, folder_token (可选，已在 MCP 配置中设置) |
 | Read | `lark_doc_read` | document_id |
 | Update | `lark_doc_update` | document_id, content |
 
@@ -97,12 +134,14 @@ curl -X PUT "https://open.feishu.cn/open-apis/drive/v1/permissions/$docId/public
 From URL:
 - Bitable: `https://xxx.feishu.cn/base/<app_token>`
 - Doc: `https://xxx.feishu.cn/docx/<document_id>`
+- Folder: `https://xxx.feishu.cn/drive/folder/<folder_token>`
 
 ## Best Practices
 
-1. **Preparation**: Configure MCP via `/lark-docs:install`, verify app permissions
+1. **Preparation**: Configure MCP via `/lark-docs:install` with FolderToken, verify app permissions
 2. **Batch Operations**: Process bitable records in batches of 50 max
 3. **Security**: Never expose App Secret in logs, follow least privilege principle
+4. **Ownership**: Documents created via OAuth will be owned by the logged-in user
 
 ## References
 
