@@ -10,7 +10,7 @@ allowed-tools: Bash, AskUserQuestion
 ## 执行步骤
 
 1. **检查前置条件**
-   - 运行 `claude mcp list` 检查 lark-mcp 是否已存在
+   - 运行 `claude mcp list` 检查 lark-office-mcp 是否已存在
    - 如果已存在，询问用户是否要重新配置
 
 2. **获取应用凭证**
@@ -27,7 +27,7 @@ allowed-tools: Bash, AskUserQuestion
    **获取步骤指导**：
    > **为什么需要 FolderToken?**
    > 这是权限安全设计:
-   > - lark-docx 只能访问你指定的文件夹
+   > - lark-office-mcp 只能访问你指定的文件夹
    > - 不会影响其他飞书文档
    > - 你完全控制工具的操作范围
    > - 生成的文档所有者属于登录的用户而非机器人
@@ -40,39 +40,70 @@ allowed-tools: Bash, AskUserQuestion
    > 5. 提取其中的 `<folder_token>` 部分
 
 4. **配置 MCP**
-   执行以下命令添加 MCP 服务器：
-
+   首先克隆 lark-office-mcp 仓库：
    ```bash
-   claude mcp add-json --scope=user lark-mcp '{
-     "command": "npx",
+   cd ~/.claude && git clone https://github.com/YSzEthan/lark-office-mcp.git
+   ```
+
+   然后安装依赖并配置 MCP 服务器：
+   ```bash
+   # 安装 Bun（如果未安装）
+   # Windows: powershell -c "irm bun.sh/install.ps1 | iex"
+   # macOS/Linux: curl -fsSL https://bun.sh/install | bash
+
+   # 安装依赖
+   cd ~/.claude/lark-office-mcp && bun install
+
+   # 添加 MCP 服务器（Windows）
+   claude mcp add-json --scope=user lark-office-mcp '{
+     "command": "bun",
      "args": [
-       "-y",
-       "@larksuiteoapi/lark-mcp",
-       "mcp",
-       "-a", "<App_ID>",
-       "-s", "<App_Secret>",
-       "--folder-token", "<Folder_Token>",
-       "--oauth"
-     ]
+       "run",
+       "<HOME>/.claude/lark-office-mcp/src/index.ts"
+     ],
+     "env": {
+       "LARK_APP_ID": "<App_ID>",
+       "LARK_APP_SECRET": "<App_Secret>",
+       "LARK_CALLBACK_PORT": "9876",
+       "LARK_FOLDER_TOKEN": "<Folder_Token>"
+     }
    }'
+
+   # macOS/Linux 用户将 <HOME> 替换为 $HOME 或完整路径
+   # Windows 用户将 <HOME> 替换为 C:\\Users\\<用户名> 或 %USERPROFILE%
    ```
 
    将 `<App_ID>`、`<App_Secret>` 和 `<Folder_Token>` 替换为用户输入的值。
 
-5. **验证配置**
-   - 运行 `claude mcp list` 确认 lark-mcp 已添加
+5. **启用 MCP 服务器**
+   确保在 settings.json 中启用:
+   ```json
+   {
+     "enabledMcpjsonServers": ["lark-office-mcp"]
+   }
+   ```
+
+6. **验证配置**
+   - 运行 `claude mcp list` 确认 lark-office-mcp 已添加
    - 告知用户配置成功
 
-6. **后续指引**
+7. **后续指引**
    告知用户：
+   - 需要重启 Claude Code 会话才能加载新的 MCP 服务器
    - 可以使用 `/mcp` 查看 MCP 工具
    - 现在可以通过自然语言操作飞书文档了
-   - 所有创建的文档将保存在指定的文件夹中
+   - 所有创建的文档将保存在指定的文件夹中（使用 doc_create 工具时传入 folder_token）
    - 文档所有者为登录的用户（通过 OAuth 授权）
    - 建议确认应用已开通相关权限
 
 ## 错误处理
 
-- 如果 npx 命令失败，提示用户检查 Node.js 是否安装
+- 如果 bun 命令失败，提示用户检查 Bun 是否安装
 - 如果 MCP 添加失败，提示用户检查凭证是否正确
 - 如果 FolderToken 格式错误，提示用户重新从 URL 中提取
+
+## 押注说明
+
+- **重要**: 官方 `@larksuiteoapi/lark-mcp` 的 `docx_builtin_import` 不支持 `folder_token` 参数
+- 本插件使用第三方 `lark-office-mcp` (https://github.com/YSzEthan/lark-office-mcp) 实现
+- `lark-office-mcp` 的 `doc_create` 工具支持 `folder_token` 参数，可以指定文档创建位置

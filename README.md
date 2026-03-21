@@ -628,6 +628,8 @@ chmod +w script.sh
 
 飞书云文档联动插件，通过飞书 MCP 实现云文档和多维表格的自主操作。
 
+> **重要**: 本插件使用第三方 [lark-office-mcp](https://github.com/YSzEthan/lark-office-mcp) 而非官方 `@larksuiteoapi/lark-mcp`，因为官方的 `docx_builtin_import` **不支持** `folder_token` 参数。而 `lark-office-mcp` 的 `doc_create` 工具 **完全支持** `folder_token` 参数，可以精确指定文档创建位置。
+
 ### 安装
 
 ```bash
@@ -640,7 +642,7 @@ chmod +w script.sh
 /lark-docs:install
 ```
 
-按提示输入飞书开放平台的 App_ID 和 App_Secret。
+按提示输入飞书开放平台的 App_ID、App_Secret 和 FolderToken。
 
 ### 查看配置状态
 
@@ -662,6 +664,7 @@ chmod +w script.sh
 - **Agent 自主执行** - lark-docs-agent 可自主处理飞书文档任务
 - **Windows 编码处理** - 自动处理 Windows 环境下中文 JSON 编码问题
 - **权限自动设置** - 创建文档后自动设置访问权限
+- **✅ 支持指定文件夹创建文档** - 使用 `doc_create` + `folder_token` 实现精确控制文档位置
 
 ### 前置要求
 
@@ -683,6 +686,12 @@ chmod +w script.sh
 用户: "把项目进度更新到飞书多维表格"
 用户: "读取那个 bitable 看看有哪些待办事项"
 ```
+
+### v0.6.0 更新
+
+- **重要变更**: 切换到 lark-office-mcp（第三方），支持 `folder_token` 参数
+- **新增**: 支持指定文件夹创建文档，文档会创建在用户指定的目录下
+- **修复**: 官方 lark-mcp 的 `docx_builtin_import` 不支持 `folder_token` 的问题
 
 ### v0.4.0 更新
 

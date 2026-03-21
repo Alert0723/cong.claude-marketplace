@@ -57,7 +57,7 @@
     {
       "name": "lark-docs",
       "source": "./lark-docs",
-      "description": "飞书云文档联动 - 通过 MCP 实现云文档和多维表格的自主操作"
+      "description": "飞书云文档联动 - 通过 MCP 实现云文档和多维表格的自主操作（支持指定文件夹创建文档）"
     }
   ]
 }

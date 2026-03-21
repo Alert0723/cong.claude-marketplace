@@ -2,6 +2,8 @@
 
 通过飞书 MCP 实现 Claude Code 对云文档和多维表格的自主操作。
 
+> **重要说明**: 本插件使用第三方 [lark-office-mcp](https://github.com/YSzEthan/lark-office-mcp) 而非官方 `@larksuiteoapi/lark-mcp`。因为官方的 `docx_builtin_import` **不支持** `folder_token` 参数，文档会创建在机器人空间而非用户指定的文件夹。而 `lark-office-mcp` 的 `doc_create` 工具 **完全支持** `folder_token` 参数，可以精确指定文档创建位置。
+
 ## 功能特性
 
 - 🚀 一键配置飞书 MCP 服务器
@@ -10,6 +12,7 @@
 - 🤖 智能识别飞书文档相关需求并自动执行
 - 🔐 权限安全设计：限制操作范围到指定文件夹
 - 👤 文档所有者为登录用户（通过 OAuth），而非机器人
+- ✅ **支持指定文件夹创建文档** - 使用 `doc_create` + `folder_token` 实现精确控制文档位置
 
 ## 安装
 
