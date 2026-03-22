@@ -58,6 +58,11 @@
       "name": "lark-docs",
       "source": "./lark-docs",
       "description": "飞书云文档联动 - 通过 MCP 实现云文档和多维表格的自主操作（支持指定文件夹创建文档）"
+    },
+    {
+      "name": "get-shit-done",
+      "source": "./get-shit-done",
+      "description": "GSD - 元提示、上下文工程与规范驱动开发系统 - 支持 Claude Code、OpenCode、Gemini 和 Codex"
     }
   ]
 }

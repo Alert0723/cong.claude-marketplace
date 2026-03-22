@@ -36,6 +36,7 @@
 | `claude-md-management` | 全平台 | CLAUDE.md 管理工具 - 审计质量、捕获学习内容、保持项目记忆更新 |
 | `safe-bash` | 全平台 | 安全 Bash Hook - 只读命令自动放行，三层防护机制 |
 | `lark-docs` | 全平台 | 飞书云文档联动 - 通过 MCP 实现云文档和多维表格的自主操作 |
+| `get-shit-done` | 全平台 | GSD - 元提示、上下文工程与规范驱动开发系统 |
 
 ---
 
@@ -708,6 +709,79 @@ chmod +w script.sh
 - **修复**：文档链接"页面不存在"问题（创建后自动设置权限）
 - **优化**：提升文档生成效率，内置 Block 类型速查表
 - **升级**：Agent 模型从 haiku 升级到 sonnet
+
+---
+
+## 🚀 get-shit-done (GSD)
+
+GSD 是一个元提示、上下文工程和规范驱动开发系统，支持 Claude Code、OpenCode、Gemini 和 Codex。
+
+### 安装
+
+```bash
+/plugin install get-shit-done@cong.claude-marketplace
+```
+
+### 核心功能
+
+#### 规范驱动开发
+- 将需求转化为结构化的可执行规范
+- 自动生成测试用例和验证标准
+- 支持增量开发和迭代优化
+
+#### 上下文工程
+- 智能管理代码上下文
+- 自动识别相关文件和依赖
+- 优化 token 使用效率
+
+#### 元提示系统
+- 可复用的开发模式和模板
+- 支持自定义工作流程
+- 跨平台兼容（Claude Code / OpenCode / Gemini / Codex）
+
+### 主要命令
+
+```bash
+# 创建新项目
+/gsd:new-project
+
+# 添加待办事项
+/gsd:add-todo
+
+# 执行任务
+/gsd:do
+
+# 查看进度
+/gsd:progress
+
+# 完成里程碑
+/gsd:complete-milestone
+
+# 代码审查
+/gsd:review
+```
+
+### 工作流程
+
+1. **项目初始化** - 创建项目结构和工作空间
+2. **需求分析** - 将用户需求转化为技术规范
+3. **任务分解** - 将大型任务分解为可执行的小任务
+4. **执行与验证** - 自动化执行和测试验证
+5. **代码审查** - 自动化代码质量检查
+6. **里程碑管理** - 跟踪项目进度和里程碑
+
+### 支持的 Agent
+
+- **gsd-planner** - 项目规划和任务分解
+- **gsd-executor** - 任务执行器
+- **gsd-verifier** - 测试验证
+- **gsd-researcher** - 代码库研究
+- **gsd-advisor** - 技术顾问
+
+### 更多信息
+
+- [GSD 官方文档](https://github.com/glittercowboy/get-shit-done)
+- [用户指南](./get-shit-done/docs/USER-GUIDE.md)
 
 ---
 
